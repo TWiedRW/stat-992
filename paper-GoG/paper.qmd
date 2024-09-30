@@ -1,0 +1,313 @@
+---
+title: "A Critical Examination of the Grammar of Graphics"
+author: Tyler Wiederich
+date: today
+date-format: long
+abstract: |
+  This paper explores the philosophy and applications of the Grammar of Graphics [@wilkinson2010]. The Grammar of Graphics uses seven orthogonal classes to deconstruct the process of creating statistical graphics. Through evidence-based reasoning, the classes can be reduced to a minimally sufficient set of features. I will then propose new additions to the minimum set of features for a more robust grammar for creating statistical graphics.
+execute: 
+  echo: false
+  warning: false
+columns: 2
+format:
+  wordcount-pdf:
+    fig-align: center
+    fig-width: 6
+    fig-height: 4
+bibliography: references.bib
+---
+
+```{=html}
+<!-- In this paper, you will examine the grammar of graphics. Your paper should adhere to the following general outline:
+
+-   introduce and summarize the philosophy of the grammar of graphics
+
+-   describe the essential (minimal set of) components of an implementation of the grammar of graphics, based on the theoretical description of the grammar in Wilkinson's book, making an argument for which components of the grammar are essential.
+
+-   evaluate whether VegaLite and ggplot2 contain all of the identified components and compare/contrast the implementation of those components.
+
+-   describe any additions to this minimal set of features/mappings/specifications would you include in a new implementation of the grammar. Justify your inclusions and argue for why they enrich the grammar and facilitate different representations or comparisons of data.
+
+Your paper should contain an introduction describing the grammar and conclude with the additions to the grammar you propose. Empirical claims, ideas, and referenced software should be cited appropriately and specifically (e.g. if talking about an implementation, cite the specific page/section of the implementation's documentation).  -->
+```
+# Introduction
+
+Data visualizations are an essential method in conveying information [@tukey1965]. When presented with data, these graphics provide faster comprehension, albeit slightly less accurate, than data presented in a table or text format [@meyer1997; @prasad2012; @brewer2012]. The computer boom in the later half of the twentieth century allowed for new innovations in graphics, along with the ability to create graphics faster and more easily [@tukey1965; @beniger1978]. The importance of data visualization is evident from its widespread use in science and media, which means that creating these graphics requires careful considerations to display meaningful information.
+
+However, the mapping of data to the visual space inherently has creative freedom which results in nearly infinite representations. An example of this is produced in @fig-examp1, where the same bivariate data is represented in three different forms. Good practices have developed over the years for producing readable and effective graphics [@tufte1983; @kosslyn1989; @cleveland1984; @heer2010]. A byproduct of graphics research is the recommendations for the forms for which graphics can take. Most modern graphical software packages, such as `ggplot2` [@ggplot2] from R [@Rsoftware], are able to create many types of graphics with minimal user effort. These packages inherently need to follow a well-designed process to produce statistical graphics.
+
+```{r}
+#| label: fig-examp1
+#| layout-ncol: 3
+#| fig-width: 2
+#| fig-cap: "Three graphical representations of identical data. The line chart in (a) is useful for showing a trend in y across x. When x is categorical, as in (b), y can be compared across the categories of x. Lastly, the countour plot in (c) shows the bivariate density of x and y. Each graphic conveys information from different contexts of the data."
+#| fig-subcap: 
+#|  - "Line chart"
+#|  - "Bar chart"
+#|  - "Contour plot"
+library(tidyverse)
+set.seed(992)
+x = 1:5
+y = round(runif(length(x), 5, 15))
+theme_set(theme_bw() + theme(aspect.ratio = 1))
+p1 <- ggplot(mapping = aes(x = x, y = y)) + scale_y_continuous(limits = c(0, 15))
+#p1 + geom_point()
+p1 + geom_line()
+p1 + geom_bar(stat = 'identity', width = 1, color = 'black', fill = 'skyblue')
+p1 + geom_density2d(color = 'skyblue')
+```
+
+Since the graphical representation of data can take many forms, it is important to establish a set of rules, or grammar, to define the process of creating data visualizations. One such proposal was the Grammar of Graphics by @wilkinson2010. The Grammar of Graphics defines the process as a sequential set of steps, where each step equally contributes to the rendered graphic. This process includes the following steps: variables, algebra, scales, statistics, geometries, coordinates, and aesthetics. Taken together, these steps provide a system of creating graphics by reducing each step into its most basic form.
+
+In this paper, I will discuss the Grammar of Graphics by @wilkinson2010 and its applications in creating graphics. The grammar, while created with good intentions, has some philosophical flaws that I will address. These shortcomings are both in theory and application of the grammar, from which easy adaptations will allow it to functionally behave with existing graphics tools.
+
+# Grammar of Graphics
+
+@wilkinson2010 describes the Grammar of Graphics as a system of seven orthogonal classes. These classes produce an abstract sequential formulation for creating graphics. Wilkinson states nearly all statistical graphics can be created using the classes, but deviation from the classes or sequence can result in meaningless graphics. The Grammar of Graphics consist of the following seven classes: variables, algebra, scales, statistics, geometries, coordinates, and aesthetics.
+
+### Variables
+
+@wilkinson2010 states an important distinction between the definition of a *variable* and a *varset*. A *variable* is a mapping of objects to values, whereas a *varset* is a mapping of values to all possible ordered lists of objects. This distinction is claimed to simplify the process of algebra, although many graphics packages do not acknowledge the difference. The Graphics Production Language (GPL) is one such example of where the distinction is directly implemented [@wilkinson2005], as well as at `graphic` package for Flutter [@graphic]. In the case of GPL, the distinction allows for data sources to take abstract forms that do not limit graph types to specific data structures [@wilkinson2000].
+
+### Algebra
+
+The algebra class is a set of operations for producing combinations of variables given varsets. This step consists of three operations: cross (\*), nest (/), and blend (+). Cross is the horizontal, or column, concatenation. Nest, while similar to cross, is essentially a left join that creates a nested structure. Blend is the vertical concatenation, like append, that should be used only when the varsets have matching or compatible units. These operations allow for a restructuring of the data, but the ending result resembles tidy data [@JSSv059i10].
+
+### Scales
+
+Scales are transformations on the units of the varsets. These are done before statistical calculations to avoid issues with meaningless results. This is easy to see in the case of averaging logarithmic-transformed data, where given a set of observations $x_i$ for $i=1,\dots,n$
+
+$$\log(\bar{X})=\log(\frac{1}{n}\sum_{i=1}^n x_i)\neq\frac{1}{n}\sum_{i=1}^n \log(x_i)\qquad x_i>0$$
+
+For example, the field of food science tends to use the logarithmic colony-forming units (log CFU) when measuring bacteria counts due to extremely large responses [@johnston2005; @abadias2008]. The interest is in the log CFU units, so averages and other statistical calculations are performed on the log scale. Adjustments to the scales before calculating statistics helps to avoid misrepresented values.
+
+### Statistics
+
+The statistics class takes a varset and outputs a summary varset. Some cases simply use the identity for its statistic, where each observation gets mapped. In other cases, summaries of the varsets can be calculated, such as counts, averages, predicted values from models (such as regression or clustering).
+
+### Geometries
+
+The abstract mapping of data into the visual space is performed with the geometry class. This takes the output of the previous classes and arranges the form that their visual representation will take. This includes the geometric shapes of points, lines/paths, areas, bars/intervals, schemas (boxplots), polygons, contours, and edges. The geometry class produces geometric sets, but still requires further specification before it enters the visual space.
+
+### Coordinates
+
+The coordinate class is how geometries are mapped into the visual space. The most common system is the Cartesian coordinate system, where up to three dimensions can be shown at a time. In most cases, only two dimensions are used since three dimensional representations provide less accurate comparisons [@croxton1932; @cleveland1984; @barfield1989; @fischer2000; @hughes]. Polar coordinates are another common coordinate system when circular geometries are desired, such as pie charts.
+
+```{r}
+#| label: fig-examp2
+#| layout-ncol: 2
+#| fig-width: 1.5
+#| fig-height: 3
+#| fig-cap: "Two examples of bar charts in both Cartesian and polar coordinates. Figures (a) and (b) are identical with the exception of the coordinate system. Similarly for figures (c) and (d)."
+#| fig-subcap: 
+#| - "Stacked bar chart in Cartesian coordinates."
+#| - "Pie chart in polar coordinates."
+#| - "Bar chart in Cartesian coordinates."
+#| - "Radial chart in polar coordinates."
+p2 <- ggplot(mapping = aes(x = '', y = y, fill = factor(x))) + 
+  geom_bar(stat = 'identity', width = 1, position = 'stack') + 
+  scale_fill_brewer(palette = 'Set2') + theme_minimal() + 
+  theme(legend.position = 'none', aspect.ratio = 1, axis.ticks.x = element_blank(),
+                                   panel.grid.major.x = element_blank()) + 
+  labs(fill = '', x = '', y ='')
+p2
+p2 + coord_polar('y') + theme_void() + theme(aspect.ratio = 1, legend.position = 'none')
+
+p3 <- ggplot(mapping = aes(x = x, y = y, fill = factor(x))) + 
+  geom_bar(stat = 'identity', width = 1, position = 'stack') + 
+  scale_fill_brewer(palette = 'Set2') + theme_minimal() + 
+  theme(legend.position = 'none', aspect.ratio = 1, axis.ticks.x = element_blank(), panel.grid.major.x = element_blank()) + 
+  labs(fill = '', x = '', y = '')
+p3
+p3 + coord_polar('y') + theme_void() + theme(aspect.ratio = 1, legend.position = 'none')
+```
+
+### Aesthetics
+
+The final class, aesthetics, is the actual mapping of geometries onto the coordinate space. This includes mapping varsets to the coordinates of the geometries and other components, such as color, shape, and size. Aesthetics can also include sound and motion, extending the Grammar of Graphics beyond a static visual space.
+
+## Philosophy
+
+The purpose of the Grammar of Graphics [@wilkinson2010] was to establish a mathematics-based foundation by using a series of mapping functions. Data is initially mapped to varsets before using set operations to join varsets together. These varsets then have direct numeric operations with the scales and statistics. Finally, the varsets are mapped into the visual space with geometries, coordinate systems, and aesthetics. The steps should compliment each other to produce other meaningful statistical graphics.
+
+The ability to create statistical graphics using the Grammar of Graphics does not guarantee that the all permutations of classes produce meaningful graphics. For example, consider @fig-examp-density-polar with the penguins [@pkg-palmerpenguins] dataset. Here, the Cartesian coordinate display of a contour plot is much easier to understand than the same data represented in polar coordinates. While the Grammar of Graphics is capable of producing many types of charts, it does not provide guidance on what charts are useful for users.
+
+```{r}
+#| label: fig-examp-density-polar
+#| layout-ncol: 2
+#| fig-cap: "Contour plots of `penguins` dataset from the palmerpenguins package in R. The left panel is in Cartesian coordinates and the right panel is in polar coordinates. The polar coordinates are more difficult to understand than the Cartesian coordinates when extracting information about the different species."
+#| fig-subcap: 
+#| - "Cartesian coordinates"
+#| - "Polar coordinates"
+
+library(palmerpenguins)
+p5 <- ggplot(penguins, mapping = aes(x = bill_length_mm, 
+                               y = bill_depth_mm,
+                               color = species)) + 
+  geom_density2d() + theme(legend.position = 'bottom')
+p5
+p5 + coord_polar()
+
+```
+
+# Modern Visualization Tools
+
+The classes contained within the Grammar of Graphics [@wilkinson2010] are used in many modern graphics packages [@ggplot2; @Waskom2021; @satyanarayan2017]. These packages typically use similar terms found in the Grammar of Graphics, such as data, scales, geometry, coordinates, and aesthetics. Code examples are provided with @lst-examp3-r and @lst-examp3-python. Using `ggplot2` with R, data is provided in the `ggplot()` function, and aesthetics are mapped using a dedicated `aes()` function. Here, the coordinate positions are included within the aesthetics along with color. Python's `seaborn` module initially calls the geometry with `os.scatterplot()`, using function arguments to identify data, coordinate positions, and color. The plot from @lst-examp3-r is produced in @fig-examp3-r.
+
+```{r}
+#| lst-label: lst-examp3-r
+#| lst-cap: "Code to produce scatterplot of `penguins` data using `ggplot2` in R."
+#| echo: true
+#| eval: false
+
+library(palmerpenguins)
+data("penguins")
+ggplot(data = penguins, mapping = aes(x = bill_length_mm, 
+                                      y = bill_depth_mm,
+                                      color = species)) + 
+  geom_point()
+
+```
+
+```{python}
+#| lst-label: lst-examp3-python
+#| lst-cap: "Code to produce scatterplot of `penguins` data using `seaborn` in Python."
+#| echo: true
+#| eval: false
+import seaborn as os
+os.scatterplot(data=r.penguins, x="bill_length_mm", 
+  y="bill_depth_mm",
+  hue="species")
+```
+
+```{r}
+#| label: fig-examp3-r
+#| fig-cap: "Scatterplot of `penguins` from @lst-examp3-r using `ggplot2` in R."
+#| echo: false
+#| eval: true
+#| fig-height: 3
+
+library(palmerpenguins)
+data("penguins")
+ggplot(data = penguins, mapping = aes(x = bill_length_mm, 
+                                      y = bill_depth_mm,
+                                      color = species)) + 
+  geom_point()
+```
+
+The Grammar of Graphics was built around GPL, and thus needs adaptations for general use. Consider @lst-examp3-python. To create a graphic, all that was minimally required was data and a geometry mapping to coordinates x and y (hue was not necessary to create the plot). The same can be said for @lst-examp3-r, although the geometry step is more explicit as its own step. A commonality is that both figures were produced with tidy data [@JSSv059i10]. However, most classes from the Grammar of Graphics are either used inherently or by default settings. Therefore, an adaptation of the Grammar of Graphics can be considered by redefining classes and their practicality in modern data visualizations.
+
+## Evaluation of the Seven Classes
+
+Establishing variables from data is an essential step in the Grammar of Graphics. This is obvious from the fact that statistical graphics are the visual mapping of data. The only requirement from the variable class is to create varsets, the mapping of values to all possible ordered lists of objects. From a practical point of view, a variable is simply a $n\times 1$ vector of values that share the same data type.
+
+The algebra step is the first class from the Grammar of Graphics that is implicitly performed by the data structure. For a single data set that is already in a tidy format [@JSSv059i10], the algebra step can be ignored since no crossing, nesting, or blending is needed. However, data often is stored across multiple sources, such as in a relational database [@alma991029835125406387]. The joining of data results in another dataset, which can then become the new data source. Consider @lst-tbl-join1 using the band_members and band_instruments from the `dplyr` package [@dplyr-pkg]. Here, data is stored separately and then joined to create a new data object. Now considering the joined data as the new data source, the algebra step is no longer required. This shows that algebra is only an intermittent step in producing data.
+
+```{r}
+#| lst-label: lst-tbl-join1
+#| lst-cap: "Full join of `band_members` and `band_instruments` from the `dplyr` package in R. The joined data is stored into `band_info` object."
+#| echo: true
+#| eval: false
+band_info <- dplyr::band_members %>% 
+  full_join(dplyr::band_instruments, by = 'name')
+```
+
+The next two classes, scales and statistics, follow a similar logic to that of the algebra class. For scales, a transformation onto a variable can be used to create a new dataset with the newly defined variable. Statistics follow a similar process, where summaries and models can be calculated and arranged into a tidy format. @lst-tbl-agg1 shows an example of a scale transformation and averages, where the resulting data is saved into a new data object.
+
+```{r}
+#| lst-label: lst-tbl-agg1
+#| lst-cap: "Data aggregation using scales and statistics on the `penguins` dataset from the `palmerpenguins` package in R. Data is saved into a new data set called `penguins_summary`."
+#| echo: true
+#| eval: false
+
+penguins_summary <- penguins %>% 
+  mutate(bill_length_cm = bill_length_mm/10,
+         bill_depth_cm = bill_depth_mm/10) %>% 
+  group_by(species, island, sex, year) %>% 
+  summarise(avg_bill_length_cm = mean(bill_length_cm, na.rm = T),
+            avg_bill_depth_cm = mean(bill_depth_cm, na.rm = T))
+```
+
+Thus far, the classes of algebra, scales, and statistics are argued to be non-essential in the Grammar of Graphics framework. The reasoning is that these classes are able to result in a new dataset that foregoes the necessity to reevaluate the data aggregation steps. In reality, the application of these classes is more fluid than having a strict ordering. For example, the magrittr package [@pkg-magrittr] in R allows for piping, a "this-then-that" approach, where data does not need to be saved into a new object. Additionally, many graphical packages allow for transformations withing the geometry class. Consider @fig-examp4 with the penguins dataset [@pkg-palmerpenguins] where the binning statistic is used within the geom_bar() function. The binning could have taken place before introducing the data into the ggplot() function, but including the transformation with the geometry increases readability and makes it easier to create the graphic. It is not always necessary to calculate relevant transformations and/or statistics as their own steps, so they can be considered non-essential classes of the Grammar of Graphics methodology.
+
+```{r}
+#| label: fig-examp4
+#| fig-width: 6
+#| fig-height: 3
+#| fig-cap: "Histogram of bill length (mm) from the `penguin` dataset. Binning is performed inside the geometry of the bar chart."
+#| echo: true
+
+ggplot(penguins, mapping = aes(x = bill_length_mm)) + 
+  geom_bar(stat = 'bin', fill = 'skyblue', color = 'black') + 
+  theme(aspect.ratio = 1/2)
+```
+
+The mapping of data into an abstract geometric space includes the classes of geometry and coordinates. The geometry class is essential in defining the visual form of the data, which is the key point of making graphics. However, the placement of geometry requires a coordinate system, which makes the coordinate class inherently essential. Given the limitations of the physical world and computers, displays of dimensional data are restricted to a maximum of three dimensions. The standard Cartesian coordinates have been around since at least the 17th century, making them an ideal default system [@vince2010, chap. 5]. The geometry and coordinate classes work in tandem to create the form that graphic will use in its final product.
+
+The final class is aesthetics. By technical definitions, mapping data to aesthetics is not necessary in producing charts, with the exception of the coordinates of the geometries. @fig-examp4 is one such example where only geometries are mapped to locations. However, it is often useful to encode additional information through one or more aesthetics [@wilkinson2005]. @fig-examp5-allgog shows separate tasks from aesthetics, where only geometry mapping is essential in creating a graphic. Aesthetics are
+
+```{r}
+#| label: fig-examp5-allgog
+#| fig-cap: "Demonstration of each visual class from the Grammar of Graphics. In (a), a coordinate grid is created based on the identify statistic of bill length (mm) and bill depth (mm). Panel (b) uses the point geometry to map the variable pairs onto the coordinate space. Panel (d) map species to color and sex to shape. Only (b) was required to create a graphic from data, but (c) adds additional context."
+#| fig-subcap: 
+#| - "Cartesian coordinates"
+#| - "Aesthetic: coordinate locations"
+#| - "Aesthetic: color + shape "
+#| layout: [[1,1],[1]]
+#| fig-height: 2
+
+
+
+p4 <- ggplot(data = penguins, mapping = aes(x = bill_length_mm, y = bill_depth_mm))
+p4 
+p42 <- p4 + geom_point()
+p42
+p44 <- p4 + geom_point(aes(color = species, shape = sex)) + theme(aspect.ratio = 1/2, legend.position = 'bottom')
+p44
+
+```
+
+## Two Applications of Essential Classes
+
+<!--# -   evaluate whether VegaLite and ggplot2 contain all of the identified components and compare/contrast the implementation of those components. -->
+
+In this section, I will evaluate the graphics software of ggplot2 in R [@wickham2010] and VegaLite in JavaScript [@satyanarayan2017]. The ggplot2 package was created from the Grammar of Graphics philosophy, using a layering approach navigate through the classes. VegaLite was similarly created using the Grammar of Graphics, but opted to use differing terminology and incorporate interactive elements. Each graphics package has its own implementation of the Grammar of Graphics and the minimally required classes.
+
+### ggplot2
+
+-   Example with minimal classes
+
+-   
+
+### VegaLite
+
+VegaLite uses *units* to define graphics, which consists of three required classes: data, mark-types, and encodings. Data follows the same form as tidy data [@JSSv059i10] and is clearly an essential component required from the Grammar of Graphics. Mark-types define the geometry of the data before using the visual space. Lastly, encodings are the visual space of geometry location and other features, such as color and shape.
+
+### Comparing ggplot2 and VegaLite
+
+-   Main separating factor is layers vs. JSON
+
+-   Terminology
+
+-   Extent (static vs. interactive)
+
+# A New Grammar
+
+<!--# -   describe any additions to this minimal set of features/mappings/specifications would you include in a new implementation of the grammar. Justify your inclusions and argue for why they enrich the grammar and facilitate different representations or comparisons of data. -->
+
+-   Algebra, scales, and statistics all can form new data
+
+-   Example with exp(normal) data, use model to get data from model before plotting
+
+-   Geometry, coordinates, and aesthetics all used together
+
+-   Need to have readable graph, so use
+
+# Conclusion
+
+\newpage
+
+### References
+
+::: {#refs}
+:::
