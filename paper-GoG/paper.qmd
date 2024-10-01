@@ -4,7 +4,7 @@ author: Tyler Wiederich
 date: today
 date-format: long
 abstract: |
-  This paper explores the philosophy and applications of the Grammar of Graphics [@wilkinson2010]. The Grammar of Graphics uses seven orthogonal classes to deconstruct the process of creating statistical graphics. Through evidence-based reasoning, the classes can be reduced to a minimally sufficient set of features. I will then propose new additions to the minimum set of features for a more robust grammar for creating statistical graphics.
+  This paper explores the philosophy and applications of the Grammar of Graphics [@wilkinson2010]. The Grammar of Graphics uses seven orthogonal classes to deconstruct the process of creating statistical graphics. Through evidence-based reasoning, the classes can be reduced to a minimally sufficient set of features. I will then propose new additions to the minimum set of features for a more robust grammar for creating statistical graphics. My new grammar simplifies the Grammar of Graphics into three class focused on data summaries, visual mappings, and graph readability.
 execute: 
   echo: false
   warning: false
@@ -59,7 +59,7 @@ p1 + geom_density2d(color = 'skyblue')
 
 Since the graphical representation of data can take many forms, it is important to establish a set of rules, or grammar, to define the process of creating data visualizations. One such proposal was the Grammar of Graphics by @wilkinson2010. The Grammar of Graphics defines the process as a sequential set of steps, where each step equally contributes to the rendered graphic. This process includes the following steps: variables, algebra, scales, statistics, geometries, coordinates, and aesthetics. Taken together, these steps provide a system of creating graphics by reducing each step into its most basic form.
 
-In this paper, I will discuss the Grammar of Graphics by @wilkinson2010 and its applications in creating graphics. The grammar, while created with good intentions, has some philosophical flaws that I will address. These shortcomings are both in theory and application of the grammar, from which easy adaptations will allow it to functionally behave with existing graphics tools.
+In this paper, I will discuss the Grammar of Graphics by @wilkinson2010 and its applications in creating graphics. The grammar, while created with good intentions, has some philosophical flaws that I will address. These shortcomings are both in theory and application of the grammar, from which easy adaptations will allow it to functionally behave with existing graphics tools. Code for this paper can be found on my GitHub [page](<https://github.com/TWiedRW/stat-992/tree/main>).
 
 # Grammar of Graphics
 
@@ -67,7 +67,7 @@ In this paper, I will discuss the Grammar of Graphics by @wilkinson2010 and its 
 
 ### Variables
 
-@wilkinson2010 states an important distinction between the definition of a *variable* and a *varset*. A *variable* is a mapping of objects to values, whereas a *varset* is a mapping of values to all possible ordered lists of objects. This distinction is claimed to simplify the process of algebra, although many graphics packages do not acknowledge the difference. The Graphics Production Language (GPL) is one such example of where the distinction is directly implemented [@wilkinson2005], as well as at `graphic` package for Flutter [@graphic]. In the case of GPL, the distinction allows for data sources to take abstract forms that do not limit graph types to specific data structures [@wilkinson2000].
+@wilkinson2010 states an important distinction between the definition of a *variable* and a *varset*. A *variable* is a mapping of objects to values, whereas a *varset* is a mapping of values to all possible ordered lists of objects. This distinction is claimed to simplify the process of algebra, although many graphics packages do not acknowledge the difference. The Graphics Production Language (GPL) is one such example of where the distinction is directly implemented [@wilkinson2005], as well as the `graphic` package for Flutter [@graphic]. In the case of GPL, the distinction allows for data sources to take abstract forms that do not limit graph types to specific data structures [@wilkinson2000].
 
 ### Algebra
 
@@ -128,9 +128,9 @@ The final class, aesthetics, is the actual mapping of geometries onto the coordi
 
 ## Philosophy
 
-The purpose of the Grammar of Graphics [@wilkinson2010] was to establish a mathematics-based foundation by using a series of mapping functions. Data is initially mapped to varsets before using set operations to join varsets together. These varsets then have direct numeric operations with the scales and statistics. Finally, the varsets are mapped into the visual space with geometries, coordinate systems, and aesthetics. The steps should compliment each other to produce other meaningful statistical graphics.
+The purpose of the Grammar of Graphics [@wilkinson2010] was to establish a mathematics-based foundation by using a series of mapping functions. Data is initially mapped to varsets before using set operations to join varsets together. These varsets then have direct numeric operations with the scales and statistics. Finally, the varsets are mapped into the visual space with geometries, coordinate systems, and aesthetics. The steps should complement each other to produce other meaningful statistical graphics.
 
-The ability to create statistical graphics using the Grammar of Graphics does not guarantee that the all permutations of classes produce meaningful graphics. For example, consider @fig-examp-density-polar with the penguins [@pkg-palmerpenguins] dataset. Here, the Cartesian coordinate display of a contour plot is much easier to understand than the same data represented in polar coordinates. While the Grammar of Graphics is capable of producing many types of charts, it does not provide guidance on what charts are useful for users.
+The ability to create statistical graphics using the Grammar of Graphics does not guarantee that all permutations of classes produce meaningful graphics. For example, consider @fig-examp-density-polar with the penguins [@pkg-palmerpenguins] dataset. Here, the Cartesian coordinate display of a contour plot is much easier to understand than the same data represented in polar coordinates. While the Grammar of Graphics is capable of producing many types of charts, it does not provide guidance on what charts are useful for users.
 
 ```{r}
 #| label: fig-examp-density-polar
@@ -267,7 +267,7 @@ p44
 
 ```
 
-To summarize, the only required classes are variables, geometries, coordinates, and aesthetics. Variables are the link to the data. Geometry is the representation of the variables and is mapped into a space using a coordinate system. Lastly, aesthetics bring the graph into the visual space. These features form the set of the minimally required classes to produce statistical graphics.
+To summarize, the only required classes are variables, geometries, coordinates, and aesthetics. Variables are the link to the data. Geometry is the representation of the variables and is mapped into a space using a coordinate system. Lastly, aesthetics brings the graph into the visual space. These features form the set of the minimally required classes to produce statistical graphics.
 
 ## Two Applications of Essential Classes
 
@@ -326,25 +326,18 @@ Although interactivity is not considered in the Grammar of Graphics [@wilkinson2
 
 <!--# -   describe any additions to this minimal set of features/mappings/specifications would you include in a new implementation of the grammar. Justify your inclusions and argue for why they enrich the grammar and facilitate different representations or comparisons of data. -->
 
--   Algebra, scales, and statistics all can form new data
 
--   Example with exp(normal) data, use model to get data from model before plotting
+We have seen that data, geometry, coordinates, and aesthetics are all essential classes to the Grammar of Graphics [@wilkinson2010]. Without these classes, it would not be possible to create graphics. However, these essential classes only allow for basic visualizations to be created. In this section, I propose a new grammar that adapts the Grammar of Graphics to a practical setting in the modern era.
 
--   Geometry, coordinates, and aesthetics all used together
-
--   Need to have readable graph, so use
-
-We have seen that data, geometry, coordinates, and aesthetics are all essential classes to the Grammar of Graphics [@wilkinson2010]. Without these classes, it would not be possible create graphics. However, these essential classes only allow for basic visualizations to be created. In this section, I propose a new grammar that adapts the Grammar of Graphics to a practical setting in the modern era.
-
-The first class in my proposed grammar is *data summary*. All statistical graphics start from a realization of data, where the data can take many structural forms. Computer software for creating graphics mostly rely on tidy data [@JSSv059i10], which is where each row is an observation and each column is a variable. What the *data summary* class does is supply a data set after combining variables, transforming scales, and calculating statistics. However, some data sources cannot be coerced into a tidy format [@filonik2019], which can be mitigated by using the same aggregation steps to the data strucutre. By replacing the first four Grammar of Graphics classes with a unified *data summary* class, the data source is prepared for both graphics and other tasks, like tables or output files. The *data summary* class simplifies the grammar by assuming the data is already prepared for graphing.
+The first class in my proposed grammar is *data summary*. All statistical graphics start from a realization of data, where the data can take many structural forms. Computer software for creating graphics mostly rely on tidy data [@JSSv059i10], which is where each row is an observation and each column is a variable. What the *data summary* class does is supply a data set after combining variables, transforming scales, and calculating statistics. However, some data sources cannot be coerced into a tidy format [@filonik2019], which can be mitigated by using the same aggregation steps to the data structure. By replacing the first four Grammar of Graphics classes with a unified *data summary* class, the data source is prepared for both graphics and other tasks, like tables or output files. The *data summary* class simplifies the grammar by assuming the data is already prepared for graphing.
 
 My next proposed class is *visual mapping*, a class that combines geometries, coordinates, and aesthetics. Graphics software generally combine geometries and aesthetics into a single step. For example, `ggplot2` can accomplish the combined classes with `geom_function(mapping = aes(x = x, y = y, color = color_var, shape = shape_var, ...)`. The distinction between geometry and aesthetics is primarily performed behind the scenes when rendering the graphic, and thus not truly differentiated for the user. Graphics software also tends to default to Cartesian coordinates, resulting in alternative coordinate themes only being used when necessary. Combining geometry, coordinates, and aesthetics into a unified *visual mapping* class makes it so that the user only considers the components necessary to produce their desired graph.
 
 Before introducing new classes, there is an unmentioned benefit to simplifying the classes into *data summary* and *visual mapping*. The strict sequencing of the Grammar of Graphics made it difficult to overlay multiple geometries. This was evident with VegaLite [@satyanarayan2017], where each iteration of the grammar was used as its own instance within "layers". Combining the classes for each stage into data and visual mappings allows for complicated graphics to be produced without adding further restrictions.
 
-The final class I propose is *graph readability*, a new class that evaluates the effectiveness of statistical graphics. This class is designed to ensure that the graph is readable given the nature of the data. Similarly to how statistical models can produce nonsensical results if not used correctly, the effectiveness of a graph sometimes hinges on the nature of the data. In addition to the structure of the data, research shows that some graphs will outperform other graphs simply by changing the comparison method [@cleveland1984; @heerCrowdsourcingGraphicalPerception2010; @fischer2005]. Therefore, creating graphics is not the end result and using *graph readability* will help in a finalized product.
+The final class I propose is *graph readability*, a new class that evaluates the effectiveness of statistical graphics. This class is designed to ensure that the graph is readable given the nature of the data. Similarly to how statistical models can produce nonsensical results if not used correctly, the effectiveness of a graph sometimes hinges on the nature of the data. In addition to the structure of the data, research shows that some graphs will outperform other graphs simply by changing the comparison method [@cleveland1984; @heer2010; @fischer2005]. Therefore, creating graphics is not the end result and using *graph readability* will help in a finalized product.
 
-Consider @fig-examp7 with zero-inflated Poisson count data. When the proportion of zeros is high, including the zeros in the histogram results in difficulties differentiating values for non-zero counts. One possible solution is summarize the proportion of zeros as text. Another instance shown in @fig-examp8 where a graph is made with points. The overlapping points hide the distributions, but adding a small amount of random noise to the placement and adjusting the opacity helps to make the graph more readable. In both examples, the graph are constructed "correctly" from a Grammar of Graphics framework [@wilkinson2010]. However, taking the extra step to in the final design creates more meaningful graphics.
+Consider @fig-examp7 with zero-inflated Poisson count data. When the proportion of zeros is high, including the zeros in the histogram results in difficulties differentiating values for non-zero counts. One possible solution is to summarize the proportion of zeros as text. Another instance shown in @fig-examp8 where a graph is made with points. The overlapping points hide the distributions, but adding a small amount of random noise to the placement and adjusting the opacity helps to make the graph more readable. In both examples, the graphs are constructed "correctly" from a Grammar of Graphics framework [@wilkinson2010]. However, taking the extra step to proofread the final design creates more meaningful graphics.
 
 ```{r}
 #| label: fig-examp7
@@ -402,7 +395,9 @@ ggplot(em, mapping = aes(x = sex)) +
 
 Throughout this paper, I discussed the Grammar of Graphics [@wilkinson2010] and its application for creating data visualizations. The Grammar of Graphics developed a mathematical framework for creating graphics, where the final result is produced through the final aesthetic class. While the framework technically works in creating visualizations, the practical application needs adaptations.
 
-I proposed a new grammar that consists of three classes: data summary, visual mapping, and graph readability. These classes combined the classes presented by Wilkinson into a sequence of data, visuals, and proofreading. This new grammar allowed for a singular sequence that is
+The Grammar of Graphics did not directly correspond to `ggplot2` or VegaLite. These packages both required adaptations from Wilkinson and, in the case of VegaLite, introduced new elements into the grammar. While the Grammar of Graphics provided a framework, it was used as a guide for creating new grammars.
+
+I proposed a new grammar that consists of three classes: data summary, visual mapping, and graph readability. These classes combined the classes presented by Wilkinson into a sequence of data, visuals, and proofreading. This new grammar allowed for a singular sequence that is focused on application and simplicity. Data summary allowed for data aggregation to take place before introducing raw data into the sequence of creating graphics. Visual mapping considers all necessary geometries, coordinate systems, and aesthetics simultaneously
 
 \newpage
 
