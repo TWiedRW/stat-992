@@ -22,7 +22,7 @@ bibliography: references.bib
 
 -   introduce and summarize the philosophy of the grammar of graphics
 
--   describe the essential (minimal set of) components of an implementation of the grammar of graphics, based on the theoretical description of the grammar in Wilkinson's book, making an argument for which components of the grammar are essential.
+-   describe the essential (minimal set of) components of an implementatiorn of the grammar of graphics, based on the theoretical description of the grammar in Wilkinson's book, making an argument for which components of the grammar are essential.
 
 -   evaluate whether VegaLite and ggplot2 contain all of the identified components and compare/contrast the implementation of those components.
 
@@ -32,7 +32,7 @@ Your paper should contain an introduction describing the grammar and conclude wi
 ```
 # Introduction
 
-Data visualizations are an essential method in conveying information [@tukey1965]. When presented with data, these graphics provide faster comprehension, albeit slightly less accurate, than data presented in a table or text format [@meyer1997; @prasad2012; @brewer2012]. The computer boom in the later half of the twentieth century allowed for new innovations in graphics, along with the ability to create graphics faster and more easily [@tukey1965; @beniger1978]. The importance of data visualization is evident from its widespread use in science and media, which means that creating these graphics requires careful considerations to display meaningful information.
+Data visualizations are an essential method in conveying information [@tukey1965]. When presented with data, these graphics provide faster comprehension, albeit slightly less accurate, than data presented in a table or text format [@meyer1997; @prasad2012; @brewer2012]. The computer boom in the later half of the twentieth century allowed for new innovations in graphics, along with the ability to create graphics faster and more easily [@tukey1965; @beniger1978]. The importance of data visualization is evident from its widespread use in science and media, which means that creating these graphics requires careful consideration to display meaningful information.
 
 However, the mapping of data to the visual space inherently has creative freedom which results in nearly infinite representations. An example of this is produced in @fig-examp1, where the same bivariate data is represented in three different forms. Good practices have developed over the years for producing readable and effective graphics [@tufte1983; @kosslyn1989; @cleveland1984; @heer2010]. A byproduct of graphics research is the recommendations for the forms for which graphics can take. Most modern graphical software packages, such as `ggplot2` [@ggplot2] from R [@Rsoftware], are able to create many types of graphics with minimal user effort. These packages inherently need to follow a well-designed process to produce statistical graphics.
 
@@ -244,7 +244,7 @@ ggplot(penguins, mapping = aes(x = bill_length_mm)) +
 
 The mapping of data into an abstract geometric space includes the classes of geometry and coordinates. The geometry class is essential in defining the visual form of the data, which is the key point of making graphics. However, the placement of geometry requires a coordinate system, which makes the coordinate class inherently essential. Given the limitations of the physical world and computers, displays of dimensional data are restricted to a maximum of three dimensions. The standard Cartesian coordinates have been around since at least the 17th century, making them an ideal default system [@vince2010, chap. 5]. The geometry and coordinate classes work in tandem to create the form that graphic will use in its final product.
 
-The final class is aesthetics. By technical definitions, mapping data to aesthetics is not necessary in producing charts, with the exception of the coordinates of the geometries. @fig-examp4 is one such example where only geometries are mapped to locations. However, it is often useful to encode additional information through one or more aesthetics [@wilkinson2005]. @fig-examp5-allgog shows separate tasks from aesthetics, where only geometry mapping is essential in creating a graphic. Aesthetics are
+The final class is aesthetics. By technical definitions, mapping data to aesthetics is not necessary in producing charts, with the exception of the coordinates of the geometries. @fig-examp4 is one such example where only geometries are mapped to locations. However, it is often useful to encode additional information through one or more aesthetics [@wilkinson2005]. @fig-examp5-allgog shows separate tasks from aesthetics, where only geometry mapping is essential in creating a graphic. Aesthetics are a semi-required class, noting that only some aesthetic mappings are necessary to produce a visual graphic.
 
 ```{r}
 #| label: fig-examp5-allgog
@@ -267,29 +267,60 @@ p44
 
 ```
 
+To summarize, the only required classes are variables, geometries, coordinates, and aesthetics. Variables are the link to the data. Geometry is the representation of the variables and is mapped into a space using a coordinate system. Lastly, aesthetics bring the graph into the visual space. These features form the set of the minimally required classes to produce statistical graphics.
+
 ## Two Applications of Essential Classes
 
 <!--# -   evaluate whether VegaLite and ggplot2 contain all of the identified components and compare/contrast the implementation of those components. -->
 
-In this section, I will evaluate the graphics software of ggplot2 in R [@wickham2010] and VegaLite in JavaScript [@satyanarayan2017]. The ggplot2 package was created from the Grammar of Graphics philosophy, using a layering approach navigate through the classes. VegaLite was similarly created using the Grammar of Graphics, but opted to use differing terminology and incorporate interactive elements. Each graphics package has its own implementation of the Grammar of Graphics and the minimally required classes.
+In this section, I will evaluate the grammar of ggplot2 in R [@wickham2010] and VegaLite in JavaScript [@satyanarayan2017]. The ggplot2 package was created from the Grammar of Graphics philosophy, using a layering approach navigate through the classes. VegaLite was similarly created using the Grammar of Graphics, but opted to use differing terminology and incorporate interactive elements. Each graphics package has its own implementation of the Grammar of Graphics and the minimally required classes.
 
 ### ggplot2
 
--   Example with minimal classes
+Many of the examples in this paper were created with `ggplot2` [@ggplot2], a package inspired by the Grammar of Graphics. To implement the required classes, data is first supplied to the data argument in the `ggplot()` function. Then, aesthetics are supplied into the `mapping` argument through the `aes()` function. Lastly, a geometry is chosen by adding a `geom_function()` function. Alternatively, variables can be directly supplied into the `aes()` function and/or within the `geom_function()` function. An example of the minimally required features is supplied in @lst-ggplot-outline.
 
--   
+```{r}
+#| lst-label: lst-ggplot-outline
+#| lst-cap: "`ggplot2` code demonostrating the minimum required classes from the Grammar of Graphics. "
+#| eval: false
+#| echo: true
+
+ggplot(data = data, mapping = aes(x = x, y = y)) + 
+  geom_function()
+```
+
+When making graphics with ggplot2, the order is important to consider. The evaluation of steps is in the presented order of layers. For example, two geometries can be mapped onto the coordinate space, but the latter geometry will overlap the former (@fig-examp6). This shows that `ggplot2` uses looped sequence through the Grammar of Graphics, where graphics are layered sequentially after each evaluation of the grammar.
+
+```{r}
+#| label: fig-examp6
+#| fig-cap: "Two scatterplots with different orders of layering `geom_point()` objects. When the red points are layered second (left panel), they appear on top of the black points. When the red points are layered first (second panel), they disappear behind the black points."
+#| fig-subcap: 
+#| - "Black points mapped before red points."
+#| - "Red points mapped before black points."
+#| fig-height: 2
+#| fig-width: 2
+#| layout-ncol: 2
+ggplot(mapping = aes(x = x, y = y)) + 
+  geom_point(size = 4, color = 'black') + 
+  geom_point(size = 2, color = 'red') 
+ggplot(mapping = aes(x = x, y = y)) + 
+  geom_point(size = 2, color = 'red') + 
+  geom_point(size = 4, color = 'black') 
+```
 
 ### VegaLite
 
-VegaLite uses *units* to define graphics, which consists of three required classes: data, mark-types, and encodings. Data follows the same form as tidy data [@JSSv059i10] and is clearly an essential component required from the Grammar of Graphics. Mark-types define the geometry of the data before using the visual space. Lastly, encodings are the visual space of geometry location and other features, such as color and shape.
+VegaLite [@satyanarayan2017] uses *units* to define graphics, which consists of three required classes: data, mark-types, and encodings. Data follows the same form as tidy data [@JSSv059i10]. Mark-types define the geometry of the data before using the visual space. Lastly, encodings are the visual space of geometry location and other features, such as color and shape.
+
+The method of implementing VegaLite is through a JSON syntax. Each class is supplied into its corresponding JSON field, which are called *data*, *mark*, and *encoding*. In the data field, the file path and format type need to be specified. The mark field specifies the geometry. Within the encoding field, the x and y coordinates are supplied as their own fields, along with the variable and variable type. Overlapping geometries are created by duplicating the individual grammars as objects supplied to a parent `layers` field.
 
 ### Comparing ggplot2 and VegaLite
 
--   Main separating factor is layers vs. JSON
+The primary factor separating `ggplot2` and VegaLite is the syntax. `ggplot2` uses layers, which are added onto previous steps. Arguments supplied to the `ggplot()` function are applied globally and followed by the addition of extra layers. On the contrary, VegaLite compiles its layers through the JSON syntax. The JSON syntax only allows for one geometry to be applied at a time, with the exception of geometries created under different encoding
 
--   Terminology
+Another difference between ggplot2 and VegaLite is the terminology. `ggplot2` mainly uses the same terminology as the Grammar of Graphics [@wilkinson2010], whereas VegaLite tends to copy the terminology from @heer2012. What VegaLite calls "mark" and "encoding" are equivalent to `ggplot2`'s "geom(etry)" and "aes(thethic)", respectively. The difference in terminology between these two graphics packages is mostly semantic.
 
--   Extent (static vs. interactive)
+Although interactivity is not considered in the Grammar of Graphics [@wilkinson2010], VegaLite incorporates additional grammar for *selection*. Selection consists of the following components: name, type, predicate, domain\|range, event, init, transforms, and resolve. This grammar class allows users to interact with values in the graph to create new graphics. The default `ggplot2` package does not support *selection*, but the `Plotly` package [@pkg-plotly] is an extension that allows `ggplot2` users to interact with graphics.
 
 # A New Grammar
 
@@ -303,7 +334,75 @@ VegaLite uses *units* to define graphics, which consists of three required class
 
 -   Need to have readable graph, so use
 
+We have seen that data, geometry, coordinates, and aesthetics are all essential classes to the Grammar of Graphics [@wilkinson2010]. Without these classes, it would not be possible create graphics. However, these essential classes only allow for basic visualizations to be created. In this section, I propose a new grammar that adapts the Grammar of Graphics to a practical setting in the modern era.
+
+The first class in my proposed grammar is *data summary*. All statistical graphics start from a realization of data, where the data can take many structural forms. Computer software for creating graphics mostly rely on tidy data [@JSSv059i10], which is where each row is an observation and each column is a variable. What the *data summary* class does is supply a data set after combining variables, transforming scales, and calculating statistics. However, some data sources cannot be coerced into a tidy format [@filonik2019], which can be mitigated by using the same aggregation steps to the data strucutre. By replacing the first four Grammar of Graphics classes with a unified *data summary* class, the data source is prepared for both graphics and other tasks, like tables or output files. The *data summary* class simplifies the grammar by assuming the data is already prepared for graphing.
+
+My next proposed class is *visual mapping*, a class that combines geometries, coordinates, and aesthetics. Graphics software generally combine geometries and aesthetics into a single step. For example, `ggplot2` can accomplish the combined classes with `geom_function(mapping = aes(x = x, y = y, color = color_var, shape = shape_var, ...)`. The distinction between geometry and aesthetics is primarily performed behind the scenes when rendering the graphic, and thus not truly differentiated for the user. Graphics software also tends to default to Cartesian coordinates, resulting in alternative coordinate themes only being used when necessary. Combining geometry, coordinates, and aesthetics into a unified *visual mapping* class makes it so that the user only considers the components necessary to produce their desired graph.
+
+Before introducing new classes, there is an unmentioned benefit to simplifying the classes into *data summary* and *visual mapping*. The strict sequencing of the Grammar of Graphics made it difficult to overlay multiple geometries. This was evident with VegaLite [@satyanarayan2017], where each iteration of the grammar was used as its own instance within "layers". Combining the classes for each stage into data and visual mappings allows for complicated graphics to be produced without adding further restrictions.
+
+The final class I propose is *graph readability*, a new class that evaluates the effectiveness of statistical graphics. This class is designed to ensure that the graph is readable given the nature of the data. Similarly to how statistical models can produce nonsensical results if not used correctly, the effectiveness of a graph sometimes hinges on the nature of the data. In addition to the structure of the data, research shows that some graphs will outperform other graphs simply by changing the comparison method [@cleveland1984; @heerCrowdsourcingGraphicalPerception2010; @fischer2005]. Therefore, creating graphics is not the end result and using *graph readability* will help in a finalized product.
+
+Consider @fig-examp7 with zero-inflated Poisson count data. When the proportion of zeros is high, including the zeros in the histogram results in difficulties differentiating values for non-zero counts. One possible solution is summarize the proportion of zeros as text. Another instance shown in @fig-examp8 where a graph is made with points. The overlapping points hide the distributions, but adding a small amount of random noise to the placement and adjusting the opacity helps to make the graph more readable. In both examples, the graph are constructed "correctly" from a Grammar of Graphics framework [@wilkinson2010]. However, taking the extra step to in the final design creates more meaningful graphics.
+
+```{r}
+#| label: fig-examp7
+#| fig-cap: "Two histograms of zero-inflated Poisson count data. In the right panel, the percentage of zeros is reported in the caption so that the distribution of counts "
+#| fig-subcap: 
+#| - "Zero counts included in histogram."
+#| - "Zero counts summarized in caption."
+#| layout-ncol: 2
+#| fig-height: 3
+
+n <- 5000
+n_zi <- 4500
+x_zip = c(rep(0, n_zi), rpois(n=n-n_zi, lambda = 10))
+percent_zero <- mean(x_zip==0)*100
+ggplot(mapping = aes(x = x_zip)) + 
+  geom_histogram(binwidth = 1, color = 'black', fill = 'skyblue') + xlab('x')
+ggplot(mapping = aes(x = x_zip[x_zip > 0])) + 
+  geom_histogram(binwidth = 1, color = 'black', fill = 'skyblue') + xlab('x') + 
+  scale_x_continuous() + 
+  labs(caption = paste0(round(percent_zero, 2), '% of counts reported as zero'))
+```
+
+```{r}
+#| label: fig-examp8
+#| fig-cap: "Two plots using points to measure bill length (mm). The left panel does not make any adjustments to point locations, resulting in overlap and difficulties determining the distribution. The right panel adds a small amount of horizontal jitter and adjusts the opacity of the points to help distinguish the density of the points."
+#| fig-subcap: 
+#| - "Only using `geom_point()`"
+#| - "Using `geom_point()` with a horizontal jitter adjustment."
+#| layout-ncol: 2
+#| fig-height: 3
+
+p8 <- ggplot(penguins, mapping = aes(x = sex, y = bill_length_mm))
+p8 + geom_point()
+p8 + geom_point(position = position_jitter(width = .1), alpha = 1/5)
+```
+
+I will now demonstrate my proposed grammar through an example. Consider the `starwars` dataset in the `dplyr` package [@pkg-dplyr]. Suppose that we want to test the hypothesis that the sex of characters in Star Wars has an association on height. A simple analysis of variance model can help to answer the hypothesis, from which the `emmeans` package [@pkg-emmeans] can extract point estimates and confidence intervals. This concludes the data summary class. The next step is visual mappings, where points and error bars make the sense for plotting estimated heights and their 95% confidence intervals. By default assumption, the geometries are positioned on a Cartesian coordinate system. Lastly, graph readability is addressed by adjusting they height axis range to include zero so that the scale of the range is not compressed. The end result is a decent graph that only considered data, visual mappings, and readability.
+
+```{r}
+library(emmeans)
+starwars <- dplyr::starwars
+model <- aov(height~sex, data = dplyr::starwars)
+em <- emmeans(model, ~sex, infer = c(T,T)) %>% as.data.frame()
+ggplot(em, mapping = aes(x = sex)) + 
+  geom_point(aes(y = emmean)) + 
+  geom_errorbar(aes(ymin = lower.CL, ymax = upper.CL),
+                width = .5) + 
+  scale_y_continuous(limits = c(0, max(em$upper.CL + 25))) + 
+  labs(title = 'Estimated height of Star Wars characters',
+       x = 'Sex', y = 'Predicted height (cm)',
+       caption = '95% confidence intervals')
+```
+
 # Conclusion
+
+Throughout this paper, I discussed the Grammar of Graphics [@wilkinson2010] and its application for creating data visualizations. The Grammar of Graphics developed a mathematical framework for creating graphics, where the final result is produced through the final aesthetic class. While the framework technically works in creating visualizations, the practical application needs adaptations.
+
+I proposed a new grammar that consists of three classes: data summary, visual mapping, and graph readability. These classes combined the classes presented by Wilkinson into a sequence of data, visuals, and proofreading. This new grammar allowed for a singular sequence that is
 
 \newpage
 
