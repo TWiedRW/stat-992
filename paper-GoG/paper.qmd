@@ -4,7 +4,7 @@ author: Tyler Wiederich
 date: today
 date-format: long
 abstract: |
-  This paper explores the philosophy and applications of the Grammar of Graphics [@wilkinson2010]. The Grammar of Graphics uses seven orthogonal classes to deconstruct the process of creating statistical graphics. Through evidence-based reasoning, the classes can be reduced to a minimally sufficient set of features. I will then propose new additions to the minimum set of features for a more robust grammar for creating statistical graphics. My new grammar simplifies the Grammar of Graphics into three class focused on data summaries, visual mappings, and graph readability.
+  This paper explores the philosophy and applications of the Grammar of Graphics [@wilkinson2010]. The Grammar of Graphics uses seven orthogonal classes to deconstruct the process of creating statistical graphics. Through evidence-based reasoning, the classes can be reduced to a minimally sufficient set of features. I will then propose new additions to the minimum set of features for a more robust grammar for creating statistical graphics. My new grammar simplifies the Grammar of Graphics into three classes focused on data summaries, visual mappings, and graph readability.
 execute: 
   echo: false
   warning: false
@@ -397,7 +397,7 @@ Throughout this paper, I discussed the Grammar of Graphics [@wilkinson2010] and 
 
 The Grammar of Graphics did not directly correspond to `ggplot2` or VegaLite. These packages both required adaptations from Wilkinson and, in the case of VegaLite, introduced new elements into the grammar. While the Grammar of Graphics provided a framework, it was used as a guide for creating new grammars.
 
-I proposed a new grammar that consists of three classes: data summary, visual mapping, and graph readability. These classes combined the classes presented by Wilkinson into a sequence of data, visuals, and proofreading. This new grammar allowed for a singular sequence that is focused on application and simplicity. Data summary allowed for data aggregation to take place before introducing raw data into the sequence of creating graphics. Visual mapping considers all necessary geometries, coordinate systems, and aesthetics simultaneously
+I proposed a new grammar that consists of three classes: data summary, visual mapping, and graph readability. These classes combined the classes presented by Wilkinson into a sequence of data, visuals, and proofreading. This new grammar allowed for a singular sequence that is focused on application and simplicity. Data summary allowed for data aggregation to take place before introducing raw data into the sequence of creating graphics. Visual mapping considers all necessary geometries, coordinate systems, and aesthetics simultaneously. Lastly, graphs are proofread in the graph readability class so that they provide meaningful interpretations. These three classes simplified the complexity of Wilkinson's grammar and provide a robust method for the applications of creating graphics.
 
 \newpage
 
