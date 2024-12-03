@@ -1,0 +1,107 @@
+---
+title: "Paper 2 Title"
+subtitle: "A comparative review"
+author: Tyler Wiederich
+format: 
+  wordcount-pdf: 
+    wordcount-banner: true
+bibliography: references.bib
+biblio-style: https://www.zotero.org/styles/apa
+---
+
+```{=html}
+<!--
+In this paper, you will compare visual inference with Bayesian and Frequentist inference techniques such as hypothesis testing and Bayes factors. You should describe the necessary prerequisites for each method (e.g. you cannot do visual inference without some sort of data, null data generation method, and display method) and what conclusions can be drawn from each procedure. Your paper should at least touch on the underlying philosophical and logical approach to each type of inference (see resources list below), as well as the available test statistics and evaluation methods. If you wish, you may argue that one or more inference methods are superior, but it is also sufficient to compare and contrast the inference methods and identify in which situations one is superior.
+-->
+```
+
+NOTES
+
+-   This paper is about visual inferences versus Frequentist/Bayesian inference, not visual inference for Bayes/Frequentist
+
+```{r}
+set.seed(2024)
+library(tidyverse)
+```
+
+# Introduction
+
+The overall goal of statistics is to quantify uncertainty.
+
+Implicitly, many statistical methods revolve around the concept of a hypothesis test.
+
+However, there is no single approach to statistical inference. (George Box quote?)
+
+Early statistical inference is generally regarded as Frequentist.
+
+In the later 20th century, a newer framework developed on the idea that previously known information can help guide inference, known as Bayesian.
+
+In this paper, I will talk about three types of statistical inferences: Frequentist, Bayesian, and visual. The paper is organized
+
+# Types of Inference
+
+Structure
+
+-   Basic idea
+
+-   Creating a null hypothesis
+
+-   Hypothesis testing
+
+-   Other considerations
+
+-   Issues?
+
+## Frequentist {#sec-frequentist}
+
+The classical framework of statistics revolves around the idea that independent and repeated events follow a stable probability function [@lehmann2008].
+
+```{r}
+#| label: fig-rpt-samples
+#| fig-cap: "Estimated probability from a Bernoulli distribution with independent and identical samples. As the number of samples increases, the cumulative average estimate for the proportion of success stabilizes around the true probability of 0.7."
+
+n = 1000
+tibble(
+  n = 1:n,
+  x = rbinom(n, size = 1, prob = 0.7)) %>% 
+  mutate(p_hat = cummean(x)) %>% 
+  ggplot(mapping = aes(x = n, y = p_hat)) + 
+  geom_hline(yintercept = 0.7, color = 'red', linetype='dashed') + 
+  geom_line() + 
+  scale_y_continuous(limits = c(0,1)) + 
+  labs(x = 'Repeated Samples',
+       y = 'Estimated Probability')
+  
+```
+
+In the early development of Frequentist statistics, philosophical debates between R.A. Fisher and J. Neyman led to
+
+Ronald Fisher believed that probability was deductive in nature and that probabilistic events could be formulated mathematically to produce a maximum likelihood function [@fisher1935]. For example, the binomial distribution is given by $P(X=x)={n\choose x}p^x(1-p)^{n-x}$, where $X$ is the random variable for the number of successes out of $n$ trials given a probability $p$ for $x$ successes. The probability mass function comes from multiplying the number of combinations of a series of successes to the probabilities of individual successes and individual failures.
+
+An inductive approach was developed by Jerzy Neyman and Egon Pearson
+
+The Frequentist analysis technique begins with an underlying assumption of the data generating function. In practice, this function is rarely known, and thus is approximated by a reasonable probability function. Some examples include a Poisson distribution for count data, a binomial distribution for proportions of successes, and a normal distribution for unimodal continuous observations.
+
+After data is collected, a hypothesis test can be formulated. The general format of a Frequentist hypothesis test is to assume that a function of the data arose from an assumed data generating function. If the function of the data does not
+
+## Bayesian {#sec-bayesian}
+
+Bayesian inference begins with some knowledge about the parameter of interest.
+
+## Visual {#sec-visual}
+
+Unlike Frequentist and Bayesian inference, visual inference relies on the nuances of human perception. With visual inference, data is presented in the visual space and treated as a statistic. For example, a common assumption for linear models in the form of $Y=X\beta+\epsilon$ is that the residual term, $\epsilon$, is independently and identically distributed with respect to a Normal distribution with a mean of zero and an unknown variance. Formal tests, like the Shapiro-Wilk test \[, can be used to
+
+The null data generation process
+
+One potential issue with visual inference is the human nature of wanting to find patterns in randomness.
+
+# Example {#sec-example}
+
+To effectively demonstrate the three inference types, consider the following example.
+
+# Discussion {#sec-discussion}
+
+# Conclusion {#sec-conclusion}
+
+@gelman2013
