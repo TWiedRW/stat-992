@@ -2,15 +2,15 @@
 title: "Statistical Inference"
 subtitle: "A comparative review of Frequentist, Bayesian, and Visual methods"
 author: Tyler Wiederich
-date: "`r format(Sys.time(), '%B %d, %Y')`"
-format: wordcount-pdf
+date: "2025-03-01"
+date-format: long
+format: pdf
 bibliography: references.bib
 biblio-style: https://www.zotero.org/styles/apa
 execute: 
   echo: false
   message: false
   warning: false
-  include: false
 ---
 
 ```{=html}
@@ -43,7 +43,7 @@ This paper is organized as follows. The foundations and uses of Frequentist, Bay
 
 # Types of Inference
 
-The role of the population parameter is a key differentiation between Frequentist and Bayesian methodologies [@pek]. The former assumes the parameter to be a fixed value for its target population [@neyman1977], whereas the latter assumes the parameter is a random variable drawn from a probability distribution [@gelman2013]. This changes the scope of inference for Frequentist and Bayesian inference. On the other hand, visual inference relies on human perception, which can be used on its own or in conjunction with Frequentist and Bayesian methods.
+The role of the population parameter is a key differentiation between Frequentist and Bayesian methodologies [@pek2020]. The former assumes the parameter to be a fixed value for its target population [@neyman1977], whereas the latter assumes the parameter is a random variable drawn from a probability distribution [@gelman2013]. This changes the scope of inference for Frequentist and Bayesian inference. On the other hand, visual inference relies on human perception, which can be used on its own or in conjunction with Frequentist and Bayesian methods.
 
 ## Frequentist Inference {#sec-frequentist}
 
@@ -130,7 +130,7 @@ Confidence intervals are another method of evaluating hypothesis tests [@neyman1
 #| - "Probability of observing test statistic under null hypothesis."
 #| - "95% confidence interval for multiple repeated samples."
 #| out-width: 90%
-#| fig-height: 4
+#| fig-height: 3
 #| layout-ncol: 2
 
 set.seed(20244)
@@ -179,7 +179,7 @@ $$
 \pi(\theta|X) = \frac{f(X|\theta)\pi(\theta)}{\int f(X|\theta)\pi(\theta)d\theta}\propto f(X|\theta)\pi(\theta)
 $$ {#eq-post}
 
-Unlike Frequentist methodology, there are no p-values in Bayesian hypothesis testing, at least in the sense of the Frequentist definition for a p-value [@gelman2013; @held2018] . Instead, the Bayes factor can be used as evidence for competing hypotheses. The Bayes factor is the ratio of the posterior odds and prior odds, where $\theta_0$ denotes the parameter model proposed for one model, and $\theta_1$ is for an alternative model (@eq-bayes-factor). Bayes factors less than 0.1 are generally considered indicative of evidence against the model for $\theta_0$ [@held2018].
+Unlike Frequentist methodology, there are no p-values in Bayesian hypothesis testing, at least in the sense of the Frequentist definition for a p-value [@gelman2013; @held2018]. Instead, the Bayes factor can be used as evidence for competing hypotheses. The Bayes factor is the ratio of the posterior odds and prior odds, where $\theta_0$ denotes the parameter model proposed for one model, and $\theta_1$ is for an alternative model (@eq-bayes-factor). Bayes factors less than 0.1 are generally considered indicative of evidence against the model for $\theta_0$ [@held2018].
 
 $$
 \text{Bayes Factor}=\frac{\pi(\theta_0|X)/\pi(\theta_1|X)}{\pi(\theta_0)/\pi(\theta_1)}
@@ -206,7 +206,6 @@ Similar to Frequentist methods, intervals of the parameters can be created for t
 #| fig-cap: "Posterior distributions for probability of success of a Binomial distriubtion using Beta and uniform prior distributions. Data was generated so that 13 out of 20 trials were successful with a true probability of 0.7, which is denoted by the red line. "
 #| fig-height: 4
 #| fig-align: center
-#| out-width: 90%
 
 set.seed(1999)
 n=20
@@ -312,11 +311,11 @@ However, this hypothesis test assumes that plots are chosen at random by viewers
 
 ## Frequentist vs. Bayesian
 
-The differences between Frequentist and Bayesian inference mainly arise from how population parameters are defined [@pek; @acree2021]. Frequentist inference assumes that a parameter for a well-defined population at a given time is fixed and unknown, where a function of the data is the random variable. In some cases, this is a reasonable assumption, such as estimating the average weight of smallmouth bass in Lake Pepin, Minnesota \[[www.dnr.state.mn.us/lakefind/](https://www.dnr.state.mn.us/lakefind/showreport.html?downum=25000100)\](<https://www.dnr.state.mn.us/lakefind/showreport.html?downum=25000100>). Here, there is a true average weight for all smallmouth bass in the lake, but the value can only be estimated. In contrast, Bayesian inference interprets the population parameter as a random variable to quantify uncertainty. For the case of smallmouth bass in Lake Pepin, prior information about average weights obtained from historical records can be combined with current data to formulate the posterior distribution to update beliefs on average weights for smallmouth bass in the lake.
+The differences between Frequentist and Bayesian inference mainly arise from how population parameters are defined [@pek2020; @acree2021]. Frequentist inference assumes that a parameter for a well-defined population at a given time is fixed and unknown, where a function of the data is the random variable. In some cases, this is a reasonable assumption, such as estimating the average weight of smallmouth bass in Lake Pepin, Minnesota ([www.dnr.state.mn.us/lakefind](https://www.dnr.state.mn.us/lakefind/showreport.html?downum=25000100)). Here, there is a true average weight for all smallmouth bass in the lake, but the value can only be estimated. In contrast, Bayesian inference interprets the population parameter as a random variable to quantify uncertainty. For the case of smallmouth bass in Lake Pepin, prior information about average weights obtained from historical records can be combined with current data to formulate the posterior distribution to update beliefs on average weights for smallmouth bass in the lake.
 
 Treating the population parameter as fixed or random affects the types of statements that Frequentist and Bayesian inferences are allowed to make about the population. Under Frequentist methodology, functions of the data are considered random, and thus statements about the population parameter pertain to the sampling distribution of the data. In essence, this means that Frequentist statements answer the question "how often would this outcome occur under repeated sampling?" For Bayesian methodology, the posterior distribution allows statements to be made directly about the population parameters.
 
-A useful tool for both Frequentist and Bayesian inferences is a range of plausible values for the population parameter [@pek]. For Freqentists, this range of values is the confidence interval [@neyman1937]. The interpretations of confidence intervals are about how often repeated sampling of the population would result in the interval covering the true population parameter. These statements become "with X% confidence, the true population parameter is between *lower limit* and *upper limit*." The Bayesian use of the posterior distribution introduces the credible interval. With the credible interval, statements can be made directly about the population parameter, such as "there is X% probability that the population parameter is between *lower limit* and *upper limit.*" @fig-freq-bayes-ci shows an example of how the intervals differ between Frequentists and Bayesians.
+A useful tool for both Frequentist and Bayesian inferences is a range of plausible values for the population parameter [@pek2020]. For Freqentists, this range of values is the confidence interval [@neyman1937]. The interpretations of confidence intervals are about how often repeated sampling of the population would result in the interval covering the true population parameter. These statements become "with X% confidence, the true population parameter is between *lower limit* and *upper limit*." The Bayesian use of the posterior distribution introduces the credible interval. With the credible interval, statements can be made directly about the population parameter, such as "there is X% probability that the population parameter is between *lower limit* and *upper limit.*" @fig-freq-bayes-ci shows an example of how the intervals differ between Frequentists and Bayesians.
 
 ```{r}
 #| label: fig-freq-bayes-ci
@@ -325,6 +324,7 @@ A useful tool for both Frequentist and Bayesian inferences is a range of plausib
 #| fig-subcap: 
 #| - "Confidence interval"
 #| - "Credible interval"
+#| layout-ncol: 2
 
 freq.ci <- data.frame()
 for(i in 1:100){
@@ -345,7 +345,7 @@ freq.ci %>%
   scale_color_brewer(palette = 'Set1') +
   labs(x = expression(theta), y = 'Sample ID', color = 'CI contain zero?') + 
   geom_vline(xintercept = 0, color = 'red', linetype = 'dashed') + 
-  theme(aspect.ratio = 1)
+  theme(aspect.ratio = 1, legend.position = 'none')
 
 ggplot(data.frame(x = c(-4, 4)), aes(x = x)) +
   stat_function(fun = dnorm, geom = 'line') +
@@ -376,44 +376,45 @@ For Bayesian analyses, the process of incorporating visual inference is slightly
 
 # Example {#sec-example}
 
-In the National Hockey League (NHL), games played at home are filled with energy and excitement for the home team. This is called having home-ice advantage. Consider the Minnesota Wild during their 2024-2025 season. Suppose that the head coach wishes to know if the Wild are playing with an advantage playing on home-ice, meaning that they win more games at home than they do for away games. Data is shown in @tbl-wild.
+In the National Hockey League (NHL), games played at home are filled with energy and excitement for the home team. This is called having home-ice advantage. Consider the Minnesota Wild during their 2024-2025 season. Suppose that the head coach wishes to know if the Wild are playing with an advantage playing on home-ice, meaning that they win more games at home than they do for away games. Data for location and results is shown in @tbl-wild.
 
 ```{r}
 #| label: tbl-wild
 
 wild <- read_csv('wild-gamelog.csv', show_col_types = F) %>% 
-  mutate(pt_diff = abs(gf-ga))
+  mutate(result = factor(score_rslt, levels = c('1'='W','0'='L'))) %>% 
+  select(season, location, result, gf = score_gf, starts_with('team')) %>% 
+  rename_with(.cols = starts_with('team'), 
+              .fn = str_remove, pattern = 'team_')
+
 wild %>% 
   group_by(season, result, location) %>% 
   count() %>% 
-  pivot_wider(names_from = location, values_from = n) %>% 
-  mutate(season = paste0(season-1, '-', season)) %>% 
-  knitr::kable(caption = 'Data from the 2023-24 and 2024-25 seasons for the Minnesota Wild. 0 represents losses and 1 represents wins.', align = 'c')
+  pivot_wider(names_from = result, values_from = n) %>% 
+  knitr::kable(caption = 'Data from the 2023-24 and 2024-25 seasons for the Minnesota Wild. L represents losses and W represents wins.', align = 'c')
 ```
 
-The first step of any analysis should be data exploration (@fig-true-props). The Minnesota Wild won 48.1 percent of their home games and 63.6 percent of their away games as of February 28th, 2025. Immediately noticeable is that the Wild seem to perform better when not playing on home-ice. We also have information about point differentials that may be helpful, which is the difference in scores at the end of the game.
+The first step of any analysis should be data exploration (@fig-true-props). The Minnesota Wild won `r round(20/(20+21),1)` percent of their home games and `r round(19/(19+22),1)` percent of their away games as of February 28th, 2025. Immediately noticeable is that the Wild do not appear to play with any significant home-ice advantage. Data was also collected for the Wild's shots on goal (SOG), penalties in minutes (PIM), power play goals (PPG), and power kill opportunities (PPO).
 
 ```{r}
 #| label: fig-true-props
 #| fig-height: 4
 #| fig-width: 6
-#| fig-cap: "Observed proportion of wins for the Minnesota Wild."
+#| fig-cap: "Observed proportion of wins for the Minnesota Wild by game location."
 
 wild %>% 
-  group_by(season, location, result, pt_diff) %>% 
+  group_by(season, location, result) %>% 
   count() %>% 
-  pivot_wider(names_from = result, names_prefix = 'result',
-              values_from = n, values_fill = 0) %>% 
-  mutate(propwin = result1 / (result0+result1),
-         season = map_chr(season, \(x)(paste0(season-1, '-', season)))) %>% 
-  filter(!(result0 == 0 & result1 == 0)) %>% 
-  ggplot(mapping = aes(x = pt_diff, y = propwin, color = location)) + 
-  geom_line() + 
-  geom_point() + 
+  ungroup() %>% 
+  group_by(season, location) %>% 
+  mutate(prop = n / sum(n)) %>% 
+  filter(result == 'W') %>%
+  ggplot(mapping = aes(x = location, y = prop, fill = location)) + 
+  geom_bar(stat = 'identity', width = 1/2) +
   scale_y_continuous(limits = c(0,1)) + 
-  labs(x = 'Point differential',
+  labs(x = 'Location',
        y = 'Proportion of wins') +
-  scale_color_manual(values = c('home' = '#154734', 'away' = '#A6192E')) +
+  scale_fill_manual(values = c('home' = '#154734', 'away' = '#A6192E')) +
   facet_wrap(~season) + 
   theme_bw() + 
   theme(aspect.ratio = 1) 
@@ -421,22 +422,34 @@ wild %>%
 
 The Frequentist analysis begins with the assumption that games are independently and identically distributed with a Binomial distribution. However, this assumption is not reasonable since the team's performance can change throughout the season. For example, Ryan Hartman received a major penalty on the February 1st, 2025 game against the Ottawa Senators. The penalty was severe enough for Hartman to receive a 10-game suspension and thus changing a part of the team's dynamic for those games.
 
+@eq-freq-glm-model is the model fit to the data for the 2024-25 season, where $\beta_0$ is the intercept term, $\beta_{1i}$ is the effect for location $i$, $\beta_3$ - $\beta_5$ are the effects of their corresponding variables, and $\pi_i$ is the probability of winning for location $i$.
+
+$$
+\eta_{ijklm}=\log(\frac{\pi_{ijklm}}{(1-\pi_{ijklm})})=\beta_0+\beta_{1i}+\beta_2\cdot \text{sog}_j + \beta_3\cdot \text{pim}_k + \beta_4\cdot \text{ppg}_l + \beta_5\cdot\text{ppo}_m
+$$ {#eq-freq-glm-model}
+
 ```{r}
 #| label: tbl-anova
 
+library(pander)
 options(contrasts = c("contr.sum", "contr.poly"))
 
-mod.freq <- glm(result ~ location + I(pt_diff) + I(pt_diff^2), 
-                data = dplyr::filter(wild, season == 2025),
+mod.freq <- glm(result ~ location + sog + pim + ppg + ppo, 
+                data = dplyr::filter(wild, season == '2024-25'),
      family = 'binomial')
-pander::pander(anova(mod.freq))
+pander(car::Anova(mod.freq, type = '3'),
+       caption = 'ANOVA Table for Frequentist GLM.')
 
 ```
 
 ```{r}
-em <- emmeans(mod.freq, ~location*pt_diff, type = 'response',
-              at = list(pt_diff = 1:6))
-ggplot(data.frame(em), aes(x = factor(pt_diff), y = prob, color = location)) + 
+#| label: fig-freq-glm-preds
+#| fig-cap: "Estimated probabilities of winning for the Frequentist GLM model."
+#| fig-align: center
+
+
+em <- emmeans(mod.freq, ~location, type = 'response')
+ggplot(data.frame(em), aes(x = location, y = prob, color = location)) + 
   geom_point(position = position_dodge(width = 1/4)) + 
 
   geom_errorbar(aes(ymin = asymp.LCL, ymax = asymp.UCL),
@@ -448,57 +461,64 @@ ggplot(data.frame(em), aes(x = factor(pt_diff), y = prob, color = location)) +
   labs(x = 'Point differential', y = 'Estimated probability of winning')
 ```
 
-Fitting a Frequentist generalized linear model (GLM) as shown in @eq-freq-glm reveals that the point differential is the only significant term (@tbl-anova), which means that the Wild do not seem to have a winning advantage by playing on home-ice. The only conclusion from the this analysis is that there is evidence that the Minnesota Wild are less likely to win games for larger point differentials than for smaller point differentials. In other words,
+Fitting the Frequentist generalized linear model (GLM) reveals that power play goals (ppg) is the only significant term (@tbl-anova), which is a reasonable result given that power plays are good scoring opportunities. The only conclusion from the this analysis is that there no evidence that the Minnesota Wild have a competitive advantage when playing at home.
 
-$$
-\eta_{ij}=\log(\frac{\pi_{ij}}{(1-\pi_{ij})})=\beta_0+\beta_{1i}+\beta_2X_{j}+\beta_3X_{j}^2
-$$ {#eq-freq-glm}
-
-To evaluate the fit of the Frequentist GLM, one solution is to use a lineup study. Here, data can be simulated such that wins and losses are randomly chosen from a Binomial distribution with a probability of success using the coefficients obtained from the fitted model. @fig-freq-examp-lineup shows a lineup of ten datasets produced by simulating wins and losses. In this lineup, probabilities are plotted along the point differential for both away and home games. It is difficult to identify the true dataset, which means that the Frequentist GLM appears to fit well.
+To evaluate the fit of the Frequentist GLM, one solution is to use a lineup study. Here, data can be simulated such that wins and losses are randomly chosen from a Binomial distribution with a probability of success using the coefficients obtained from the fitted model. @fig-freq-examp-lineup shows a lineup of ten datasets produced by simulating wins and losses. In this lineup, probabilities are plotted along the power play goals for both away and home games. It is difficult to identify the true dataset, which means that the Frequentist GLM appears to fit well for the location of the games.
 
 ```{r}
 set.seed(2025)
 wild.freq <- wild %>% 
-  filter(season == 2025) %>% 
+  filter(season == '2024-25') %>% 
+  ungroup() %>% 
   mutate(prob = predict(mod.freq, type = 'response'),
          rownum = row_number(),
          sim_win = map(prob, \(p)(rbinom(n = 10, size = 1, prob = p)))) %>% 
   unnest(sim_win) %>% 
   group_by(rownum) %>% 
   mutate(dataset = 1:n(), 
-         display = ifelse(dataset == 3, result, sim_win))
+         win = as.numeric(result) %% 2,
+         display = ifelse(dataset == 3, win, sim_win))
 
 ```
 
 ```{r}
 #| label: fig-freq-examp-lineup
-#| fig-cap: "Lineup study using simulated wins and losses for the Minnesota Wild. Nine of the plots show data simulated from the fitted GLM, and one plot uses the actual data. The target plot is plot number (81 divided by 27)."
+#| fig-cap: "Lineup study using simulated wins and losses for the Minnesota Wild. Nine of the plots show data simulated from the fitted GLM, and one plot uses the actual data. The target plot is plot number (10-(4+3))."
+#| fig-align: center
 
 
 library(modelr)
  wild.freq %>% 
   group_by(dataset) %>% 
   nest() %>% 
-  mutate(glm = map(data, \(x)(glm(display ~ location + pt_diff + I(pt_diff^2),
+  mutate(glm = map(data, \(x)(glm(display ~ location + sog + pim + ppg + ppo ,
                                   data = x, family = 'binomial')))) %>% 
   mutate(preds = map(glm, predict, type = 'response')) %>% 
   mutate(newdata = map2(data, glm, add_predictions, type = 'response')) %>% 
   unnest(newdata) %>% 
-  ggplot(mapping = aes(x = pt_diff, y = result, color = location)) + 
+  ggplot(mapping = aes(x = location, y = pred, color = location)) + 
   geom_point(position = position_jitter(height = 0.01, width = 0.1),
              alpha = 1/2) +
-   geom_line(aes(y = pred)) + 
-# stat_smooth(method = "glm",
-#             formula = y ~ poly(x,2, raw =T),
-#             se = F,
-#             method.args = list(family=binomial)) + xlab("Point differential") +
+   # geom_line(aes(y = pred)) + 
   scale_color_manual(values = c('home' = '#154734', 'away' = '#A6192E')) +
   facet_wrap(~dataset, nrow = 2) + 
+   labs(x = 'Location', y = 'Estimated Probability of Winning',
+        color = 'Location') + 
   # scale_y_continuous(limits = c(0,1)) + 
   theme_bw()
 ```
 
-The Bayesian approach uses the `brms` package in R to fit a Bayesian GLM to the data using the Minnesota Wild win-loss record for the 2023-2024 season. Two models are compared, one with uninformative (flat) priors on each model coefficient, and another that uses normal priors based on a Frequentist GLM fit for the 2023-2024 season. The standard errors obtained from the Frequentist GLM coefficients were small, and thus multiplied by 2 for use in the Bayes GLM with normal priors to allow for more flexibility.
+The Bayesian approach uses the `brms` package in R to fit a Bayesian GLM to the data using the Minnesota Wild win-loss record for the 2023-2024 season. Two models are compared, one with uninformative (flat) priors on each model coefficient, and another that uses normal priors based on a Frequentist GLM fit for the 2023-2024 season (@tbl-bayes-priors). The estimates and standard errors are overly reliant that the results from the previous season carry over to the current season, which is somewhat reasonable since the composition of the Wild is mostly the same.
+
+```{r}
+#| label: tbl-bayes-priors
+mod.prior <- glm(result ~ location + sog + pim + ppg + ppo, 
+                 data = filter(wild, season == '2023-24'), 
+                 family = 'binomial')
+
+pander(summary(mod.prior)$coefficients[,1:2],
+       caption = 'Bayesian GLM coefficients for normal priors, generated from coefficents of a Frequentist GLM for the 2023-24 season.')
+```
 
 ```{r}
 #| echo: false
@@ -510,25 +530,25 @@ The Bayesian approach uses the `brms` package in R to fit a Bayesian GLM to the 
 set.seed(2013910)
 library(brms)
 
-mod.prior <- glm(result ~ location + pt_diff + I(pt_diff^2), data = filter(wild, season == 2024))
 
-summary(mod.prior)
 
-bayes.unif <- brm(result ~ location + pt_diff + I(pt_diff^2),
-    data = filter(wild, season == 2025),
+bayes.unif <- brm(result ~ location + sog + pim + ppg + ppo,
+    data = filter(wild, season == '2024-25'),
     save_all_pars = TRUE,
     family = bernoulli())
 
-default_prior(result ~ location + pt_diff + I(pt_diff^2),
-    data = filter(wild, season == 2025))
+# default_prior(result ~ location + sog + pim + ppg + ppo,
+#     data = filter(wild, season == '2024-25'))
 
-bayes.priors <- brm(result ~  location + pt_diff + I(pt_diff^2),
-    data = filter(wild, season == 2025),
+bayes.priors <- brm(result ~ location + sog + pim + ppg + ppo,
+    data = filter(wild, season == '2024-25'),
     prior = c(
-      set_prior("normal(-0.4379,0.2310)", class = "b", coef = "Ipt_diffE2"),
-      set_prior("normal(0.3480,0.3002)", class = "b", coef = "location1"),
-      set_prior("normal(1.8803,1.1902)", class = "b", coef = "pt_diff"),
-      set_prior("normal(-1.0285,1.2716)", class = 'Intercept')
+      set_prior("normal(-0.485,0.3003)", class = "b", coef = "location1"),
+      set_prior("normal(0.1077,0.06424)", class = "b", coef = "pim"),
+      set_prior("normal(-0.7984,0.5134)", class = "b", coef = "ppg"),
+      set_prior("normal(0.5671,0.2861)", class = "b", coef = "ppo"),
+      set_prior("normal(-0.0716,0.05113)", class = "b", coef = "sog"),
+      set_prior("normal(-0.2001,1.498)", class = 'Intercept')
     ),
     # sample_prior = 'only',
     save_all_pars = TRUE,
@@ -540,12 +560,11 @@ bayes.priors <- brm(result ~  location + pt_diff + I(pt_diff^2),
 #| include: false
 
 set.seed(283718921)
-bayes_factor(bayes.priors, bayes.unif)
+bf <- bayes_factor(bayes.unif, bayes.priors)
+bf
 ```
 
-The Bayes GLM coeffiecients for both models are similar to the Frequentist approach (@tbl-coef-compare). This result is expected since the uninformative model puts more weight on the data and the informative model has relatively small standard errors for its prior distributions. Additionally, the coefficients obtained using informative priors have have smaller standard errors than those obtained for the uninformative priors model and the Frequentist GLM.
-
-Comparing the two Bayesian models and using the model with informative priors as the "null hypothesis", the Bayes Factor is computed to be approximately 0.42. Although the standard errors of the parameters for the two models differ, there is not much evidence to prefer the informative priors over the uninformative priors. One discrepancy between the two Bayesian models is that 95% credible interval for the uninformative model does not consider the linear point differential to be a significant term (-0.02, -4.84), whereas the informative model does (0.62, 3.33). In this case, it may be better to consider additional prior distributions or use model averaging to obtain a more robust conclusion [@hinne].
+The Bayes GLM coefficients for both models are similar to the Frequentist approach (@tbl-coef-compare). This result is expected since the uninformative model puts more weight on the data and the informative model has information from the previous season. Additionally, the coefficients obtained using informative priors have have smaller standard errors than those obtained for the uninformative priors model and the Frequentist GLM, and the uninformative priors model has slightly larger standard errors than the Frequentist GLM.
 
 ```{r}
 #| label: tbl-coef-compare
@@ -578,6 +597,34 @@ data.frame(
 
 ```
 
+Comparing the two Bayesian models and using the model with informative priors as the "null hypothesis", the Bayes Factor is computed to be approximately 0.4. Although the standard errors of the parameters for the two models slightly differ, there is not much evidence to prefer the informative priors over the uninformative priors. The conclusions obtained from both Bayesian models are the same, where only power play goals is significant according to the 95% credible intervals (@fig-bayes-results).
+
+```{r}
+#| label: fig-bayes-results
+#| fig-cap: "95% credible intervals for both Bayesian models. The model with normal priors has smaller intervals, but the conclusions are the same for both models."
+#| fig-height: 3
+
+
+summary(bayes.unif)$fixed[,3:4] %>% 
+  rownames_to_column(var = 'term') %>% 
+  mutate(model = 'flat priors') %>% bind_rows((summary(bayes.priors)$fixed[,3:4] %>% 
+  rownames_to_column(var = 'term') %>% 
+  mutate(model = 'normal priors'))) %>% 
+  ggplot(mapping = aes(y = term, color = model)) + 
+  geom_vline(xintercept = 0, linetype = 'dashed') +
+  geom_errorbar(aes(xmin = `l-95% CI`, xmax = `u-95% CI`), 
+                position = position_dodge(width = 1/2),
+                width = 1/4) + 
+  scale_color_brewer(palette = 'Set1') + 
+  labs(x = '95% Credible Interval',
+       y = 'Model Term') + 
+  theme(aspect.ratio = 1/2)
+
+
+```
+
+
+
 ```{r}
 #| label: fig-bayes-probs
 #| layout-ncol: 2
@@ -589,45 +636,71 @@ data.frame(
 
 
 set.seed(42)
-em.unif <- emmeans(bayes.unif, ~location*pt_diff,
+em.unif <- emmeans(bayes.unif, ~location + sog + pim + ppg + ppo,
                    at = list(pt_diff = 1:6), type = 'response')
-em.priors <- emmeans(bayes.priors, ~location*pt_diff,
+em.priors <- emmeans(bayes.priors, ~location + sog + pim + ppg + ppo,
                    at = list(pt_diff = 1:6), type = 'response')
 
-ggplot(data.frame(em.unif), aes(x = factor(pt_diff), y = response, color = location)) + 
+ggplot(data.frame(em.unif), aes(x = location, y = response, color = location)) + 
   geom_point(position = position_dodge(width = 1/4)) + 
 
   geom_errorbar(aes(ymin = lower.HPD, ymax = upper.HPD),
                 position = position_dodge(width = 1/4),
                 width = 1/4) + 
-  labs(x = 'Point differential', y = 'Predicted Probability') + 
+  labs(x = 'Location', y = 'Predicted Probability') + 
   scale_color_manual(values = c('home' = '#154734', 'away' = '#A6192E')) + 
-  theme_bw() + theme(aspect.ratio = 1) +
+  theme_bw() + theme(aspect.ratio = 1, legend.position = 'none') +
   scale_y_continuous(limits = c(0,1))
 
-ggplot(data.frame(em.priors), aes(x = factor(pt_diff), y = response, color = location)) + 
+ggplot(data.frame(em.priors), aes(x = location, y = response, color = location)) + 
   geom_point(position = position_dodge(width = 1/4)) + 
 
   geom_errorbar(aes(ymin = lower.HPD, ymax = upper.HPD),
                 position = position_dodge(width = 1/4),
                 width = 1/4) + 
-  labs(x = 'Point differential', y = 'Predicted Probability') + 
+  labs(x = 'Location', y = 'Predicted Probability') + 
   scale_color_manual(values = c('home' = '#154734', 'away' = '#A6192E')) + 
-  theme_bw() + theme(aspect.ratio = 1) +
+  theme_bw() + theme(aspect.ratio = 1, legend.position = 'none') +
   scale_y_continuous(limits = c(0,1))
 ```
 
-Similar to the Frequentist case, visual inference can be used to examine model diagnostics for the Bayesian models. Here, it would be worth using comparing the uninformative and informative models to provide additional evidence along with the Bayes factor for which model to use since the linear term of point differential has conflicting conclusions.
+Similar to the Frequentist case, visual inference can be used to examine model diagnostics for the Bayesian models. Here, it would be worth using comparing the uninformative and informative models to evaluate if either model is sufficient. Additionally, plotting predicted probabilities along each model term would be good candidates to use as target plots. Data can be simulated from the probabilities, refit with with model, and placed into a lineup study with the target plot.
+
+```{r}
+#| label: fig-bayes-vis-targets
+#| fig-cap: "Potential target plots for visual inference"
+#| fig-width: 6
+wild %>% 
+  filter(season == '2024-25') %>% 
+  mutate(pred.unif = predict(bayes.unif, type = 'response')[,1],
+         pred.norm = predict(bayes.priors, type = 'response')[,1]) %>% 
+  filter(result == 'W') %>% 
+  pivot_longer(sog:ppo, names_to = 'term') %>% 
+  rename(
+    `Uniform Priors` = pred.unif,
+    `Normal Priors` = pred.norm
+  ) %>% 
+  pivot_longer(`Uniform Priors`:`Normal Priors`, names_to = 'model', values_to = 'prob') %>% 
+  ggplot(mapping = aes(x = value, y = prob, color = location)) + 
+  labs(x = expression(theta),
+       y = 'Predicted Probability of Winning') + 
+  geom_point(alpha = 1/2) + 
+  scale_color_manual(values = c('home' = '#154734', 'away' = '#A6192E')) + 
+  facet_grid(model~term, scales = 'free') + 
+  theme(aspect.ratio = 1)
+```
+
+For the Minnesota Wild, the probability of winning games appears to be a coin flip. Only power play goals had a significant effect, as indicated in the Frequentist and Bayesian GLMs. However, it was interesting to see that the Wild do not seem to have an advantage while playing games at the Excel Energy Center.   
 
 # Discussion {#sec-discussion}
 
-There is no single way to approach statistical inference. The commonality of statistical methods is that uncertainty is quantified through a random variable, but defining the random variable is where the methods diverge in computation and interpretations. In this paper, Frequentist and Bayesian inferences were compared along with visual inference, and when each methodology should be used.
+There is no single way to approach statistical inference. The commonality of statistical methods is that uncertainty is quantified through a random variable, but defining the random variable is where the methods diverge in computation and interpretations. In this paper, the methodology of Frequentist, Bayesian, and visual inferences were discussed and compared, included when each type of inference should be used.
 
-Frequentists rely on data as it is provided. This is a reasonable situation when conducting novel experiments or collecting data from new sources. Statements of uncertainty pertain to what happens under repeated sampling conditions, which is useful when wanting to know what conditions to expect for the next instance of data collection. Results are more easily calculated, having test statistics and confidence intervals based on sampling distributions of statistics from the parameter.
+Frequentists rely on data as it is provided. This is a reasonable situation when conducting novel experiments or collecting data from new sources. Statements of uncertainty pertain to what happens under repeated sampling conditions, which is useful when wanting to know what conditions to expect for the next instance of similar data collection. Results are more easily calculated, having test statistics and confidence intervals based on sampling distributions of statistics from the parameter.
 
-In contrast to Frequentists, Bayesian inference is about updating beliefs given prior information. The behavior of the population parameter is treated as random and updated through a new instances of data collection. The goal is to estimate the posterior distribution so that statements can be made about the parameter(s) of interest. Other than model checking, this is where Bayesian analyses typically end since the goal is to make make inferences on the parameter(s). Bayesian methods are typically computationally demanding due to the complex posterior calculations.
+In contrast to Frequentists, Bayesian inference is about updating beliefs given prior information. The behavior of the population parameter is treated as random and updated through a new instances of data collection. The goal is to estimate the posterior distribution so that statements can be made about the parameter(s) of interest. Other than model checking, this is where Bayesian analyses typically end since the goal is to make make inferences on the parameter(s). Bayesian methods are typically computationally demanding due to the complex posterior calculations
 
-Lastly, visual inference is unique in that it can function on its own or in addition to Frequentist and Bayesian methods [@loy2017; @gelman2013]. The main goal of lineup studies is to determine if a target plot can be identified. If it can be distinguished, then there is evidence that humans a particular feature of the target plot. From @fig-lineup-examp1, null plots were modeled with a gamma distribution for the y-axis variable and a normal distribution for the x-axis variable. The target plot was plot number 8, where the y-axis variable used a uniform distribution instead of a gamma distribution. Additionally, these lineup tests can be adapted for model fitting in Frequentist and Bayesian analyses, which can help to verify that models are reasonable for the collected data.
+Lastly, visual inference is unique in that it can function on its own or in addition to Frequentist and Bayesian methods [@loy2017; @gelman2013]. The main goal of lineup studies is to determine if a target plot can be identified from a set of null plots. If it can be distinguished, then there is evidence that humans can pick up on particular features of the target plot. From @fig-lineup-examp1, null plots were modeled with a gamma distribution for the y-axis variable and a normal distribution for the x-axis variable. The target plot was plot number 8, where the y-axis variable used a uniform distribution instead of a gamma distribution. Additionally, these lineup tests can be adapted for model fitting in Frequentist and Bayesian analyses, which can help to verify that models are reasonable for the collected data.
 
 Frequentist, Bayesian, and visual inference each have their own place in estimating phenomena of the natural world. After data collection, the type of analysis mostly comes down to personal preference and adequately fitting reasonable models. Frequentists use data as the foundation their analyses and Bayesians use data and prior beliefs. Visual inference exists as a method that can be used in combination with analyses, but also for inferences regarding data visualization. Picking the right type of inference is useful for providing data-driven results.
 
