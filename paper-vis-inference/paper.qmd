@@ -113,17 +113,15 @@ tibble(
 
 An inductive behavior approach was developed by Neyman and E. S. Pearson to address errors [@neyman1933]. Neyman's approach emphasized that likelihoods were random and that further testing was needed so that inferences are not often wrong from true data generating functions. This development came to be the hypothesis test, where the level of error given certain assumptions about the data can be controlled. These tests include Type 1 and Type 2 errors, which are measures of uncertainty regarding how likely the hypothesis tests arrive at an incorrect conclusion.
 
-Many modern statistical methods incorporate some concept of the hypothesis test [@stroup], which begin with an underlying assumption of the data generating function. In practice, this function is rarely known, and thus is approximated by a reasonable probability function or by attempting different models. For example, a generalized linear model can assume a Poisson or Negative Binomial distribution for data that has unrestricted counts, in contrast to the Binomial distribution where the total number of counts is known.
-
 When data is collected, a hypothesis test can be formulated [@eq-freq-ht]. The idea of a Frequentist hypothesis test is to assume that a realization of the data arose from an assumed data generating function, called the null hypothesis [@neyman1933]. If the function of the data does not seem plausible under the null hypothesis, then the null hypothesis is rejected in favor of the alternative hypothesis, which encompasses the complement of the null hypothesis.
 
 $$
 H_0:\theta=\theta_0 \qquad H_1:\theta=\theta_1
 $$ {#eq-freq-ht}
 
-One method to evaluate a hypothesis test is through a test statistic. Test statistics are formed so that their sampling distribution are known under the null hypothesis. For example, if the null hypothesis assume the random sample is from a normal distribution with mean $\mu$ and variance $\sigma^2$, then the sampling distribution of the sample mean $\bar{X}=\frac{1}{N}\sum_{i=1}^{N}x_i$ can be rewritten as $Z=\frac{\bar{X}-\mu}{\sigma/\sqrt{N}}$, which follows a standard normal distribution. Given the data, a probability can be calculated for observing the test statistic under the null hypothesis, which is called a p-value (@fig-freq-eval-methods-1). If the p-value is small, then it was unlikely to see the observed data under the null hypothesis, giving evidence for the alternative hypothesis. However, a large p-value does not give evidence that the data was generated from the null hypothesis since this was an assumed condition.
+One method to evaluate a hypothesis test is through a test statistic. Test statistics are formed so that their sampling distribution are known under the null hypothesis. For example, if the null hypothesis assume the random sample is from a normal distribution with mean $\mu$ and variance $\sigma^2$, then the sampling distribution of the sample mean, $\bar{X}=\frac{1}{N}\sum_{i=1}^{N}x_i$, can be rewritten as $Z=\frac{\bar{X}-\mu}{\sigma/\sqrt{N}}$, which follows a standard normal distribution. Given the data, a probability can be calculated for observing the test statistic under the null hypothesis, which is called a p-value (@fig-freq-eval-methods-1). If the p-value is small, then it was unlikely to see the observed data under the null hypothesis, giving evidence for the alternative hypothesis. However, a large p-value does not give evidence that the data was generated from the null hypothesis since this was an assumed condition.
 
-Confidence intervals are another method of evaluating hypothesis tests [@neyman1937]. These intervals for two-sided tests are calculated using the form: $\text{Statistic } \pm c\times\text{Standard Error}$, where $c$ is defined to produce a $C$ percent confidence level. Since the data is random, the interpretation of Frequentist confidence intervals is that $C$ percent of confidence intervals calculated from repeated sampling of the population will contain the true parameter value $C$ percent of the time (@fig-freq-eval-methods-2). Evaluating hypotheses with confidence intervals simply involve checking if the parameter value set in the null hypothesis falls within the interval. If the value does not fall in the interval, then there is evidence to reject the null hypothesis.
+Confidence intervals are another method of evaluating hypothesis tests [@neyman1937]. These intervals for two-sided tests are calculated using the form: $\text{Statistic } \pm c\times\text{Standard Error}$, where $c$ is defined to produce a $C$ percent confidence level. Since the data is random, the interpretation of Frequentist confidence intervals is that $C$ percent of confidence intervals calculated from repeated sampling of the population will contain the true parameter value $C$ percent of the time (@fig-freq-eval-methods-2). Evaluating hypotheses with confidence intervals simply involve checking if the parameter value in the null hypothesis falls within the interval. If the value does not fall in the interval, then there is evidence to reject the null hypothesis.
 
 ```{r}
 #| label: fig-freq-eval-methods
@@ -187,7 +185,7 @@ $$
 \text{Bayes Factor}=\frac{\pi(\theta_0|X)/\pi(\theta_1|X)}{\pi(\theta_0)/\pi(\theta_1)}
 $$ {#eq-bayes-factor}
 
-To illustrate a simple example of Bayesian inference, consider @fig-freq-binom where the true data generating function is $\text{Binomial}(n=20, p=0.7)$. The observed number of successes was 13 out of 20. Using an uninformative prior, the posterior distribution becomes @eq-binom-unif, which is proportional to a Beta distribution with $\alpha=x+1$ and $\beta=n-x+1$.
+To illustrate a simple example of Bayesian inference, consider @fig-freq-binom where the true data generating function is $\text{Binomial}(n=20, p=0.7)$. The observed number of successes was 13 out of 20. Using an uninformative prior, the posterior distribution becomes @eq-binom-unif, which is proportional to a Beta distribution with $\alpha=13+1$ and $\beta=20-13+1$.
 
 $$
 \pi(p|X)) = {20 \choose x}p^x(1-p)^{n-x}\times 1 \propto p^{(x+1)-1}(1-p)^{(n-x+1)-1}
@@ -197,11 +195,11 @@ Now suppose that it is known that previous data shows that $p$ is around 0.7. A 
 
 $$
 \pi(p|X))  \propto p^{x}(1-p)^{n-x}\times p^{\alpha-1}(1-p)^{\beta-1} \propto Beta(x+\alpha+1,n-x+\beta+1)
-$$
+$$ {#eq-binom-beta}
 
-Letting $\alpha=9$ and $\beta=3.857$, the prior distribution has a mean of 0.7 and a variance of 0.01515. The posterior distribution becomes $\text{Beta}(x+10,n-x+4.857)$, which shifts the posterior closer to 0.7 than when using the uniform prior (@fig-bayes-binom).
+Letting $\alpha=9$ and $\beta=3.857$, the prior distribution has a mean of 0.7 and a variance of 0.01515. The posterior distribution becomes $\text{Beta}(13+10,20-13+4.857)$, which shifts the posterior closer to 0.7 than when using the uniform prior (@fig-bayes-binom).
 
-Similar to Frequentist methods, intervals of the parameters can be created for the posterior distribution, called credible intervals [@acree2021]. These intervals are calculated simply by encompassing a desired probability from the posterior distribution. The result is that interpretations are directly about the parameter and not repeated sampling of the data. From the binomial example with a uniform prior, the two-sided 95% credible interval states that there is a 95% probability that the proportion of success is between 0.43 and 0.82.
+Similar to Frequentist methods, intervals of the parameters can be created for the posterior distribution, which are called credible intervals [@acree2021]. These intervals are calculated simply by determining limits for a desired probability from the posterior distribution. The result is that interpretations are directly about the parameter and not repeated sampling of the data. From the binomial example with a uniform prior, the two-sided 95% credible interval states that there is a 95% probability that the proportion of success is between 0.43 and 0.82.
 
 ```{r}
 #| label: fig-bayes-binom
@@ -239,7 +237,7 @@ tibble(
 
 ```
 
-Selection of an appropriate prior distribution is an important part of Bayesian methods [@pek2020; @gelman2013; @strachan2003]. Prior distributions are typically chosen so that the strength of belief, or lack thereof, is accounted for. Overly optimistic priors either favor certain results or have smaller variances around anticipated values. When information is not available or there is a weak belief in prior information, a uniform prior or a prior with a large variance can be used. However, the choice of models can be evaluated against each other [@held2018] or averaged together [@hoeting1999; @hinne2020]
+Selection of an appropriate prior distribution is an important part of Bayesian methods [@pek2020; @gelman2013; @strachan2003]. Prior distributions are typically chosen so that the strength of belief, or lack thereof, is accounted for. Overly optimistic priors either favor certain results or have smaller variances around anticipated values. When information is not available or there is a weak belief in prior information, a uniform prior or a prior with a large variance can be used. However, the choice of models can be evaluated against each other through the Bayes factor [@held2018] or averaged together [@hoeting1999; @hinne2020]
 
 ## Visual Inference {#sec-visual}
 
@@ -273,7 +271,7 @@ ggplot(data = lineup1(), aes(x = x, y = y)) +
 
 ```
 
-Defining the target plot and null plots are essential steps in designing a lineup study. The target plot is chosen so that it reflects a specific condition. In contrast, the null plots are constructed to reflect conditions that the target graph do not satisfy. For example, linear models often have the assumption that residuals are independently and identically distributed with mean zero and a constant variance [@majumder2013]. In this case, testing the residual assumption would involve using a linear model fit to the true data as the target plot. Data can be simulated according the estimated linear model and fitted to the same model, which would result in the null plots. If viewers can identify the residual plot of the true dataset, then visual inference would indicate that the independent and identically distributed assumption of the residuals is violated. See @fig-resid-examp for an example.
+Defining the target plot and null plots are essential steps in designing a lineup study. The target plot is chosen so that it reflects a specific condition, often involving real data. In contrast, the null plots are constructed to reflect conditions that the target graph do not satisfy, or simulated data. For example, linear models often have the assumption that residuals are independently and identically distributed with mean zero and a constant variance [@majumder2013]. In this case, testing the residual assumption would involve using a linear model fit to the true data as the target plot. Data can be simulated according the estimated linear model and fitted to the same model, which would result in the null plots. If viewers can identify the residual plot of the true dataset, then visual inference would indicate that the independent and identically distributed assumption of the residuals is violated. See @fig-resid-examp for an example.
 
 ```{r}
 #| label: fig-resid-examp
@@ -302,23 +300,23 @@ ggplot(mapping = aes(x = x, y = scale(y))) +
 
 ```
 
-The lineup protocol tests the null hypothesis that the target graph cannot be identified among graphs generated with a null model against the alternative hypothesis that the target graph can be identified among graphs generated with a null model. Assuming that a total of $m-1$ null plots, $1$ target plot, and $n$ participants, a Binomial distribution can be used to test the hypothesis that the target plot is chosen correctly:
+The lineup protocol tests the null hypothesis that the target graph cannot be identified among graphs generated with a null model against the alternative hypothesis that the target graph can be identified among graphs generated with a null model. Assuming that a total of $m-1$ null plots, $1$ target plot, and $n$ participants, a Binomial distribution can be used to test the hypothesis that the target plot is chosen correctly where $\pi$ is the probability of choosing the target plot :
 
 $$
 H_0: \pi=1/m \quad \text{vs.} \quad H_A: \pi\neq1/m
 $$
 
-However, this hypothesis test assumes that plots are chosen at random by viewers. In reality, viewers are searching for particular features in the plots to use as justification for their selection [@buja2009]. A different method of evaluation is presented by @vanderplas2021, where plot selection dependencies can be modeled with a Dirichlet-multinomial distribution.
+However, this hypothesis test assumes that plots are chosen at random by viewers. In reality, viewers are searching for particular features in the plots to use as justification for their selection [@buja2009]. A different method of evaluation is presented by @vanderplas2021, where plot selection dependencies can be modeled with a Dirichlet-multinomial distribution. This accounts for various features in the plots and the strength of their signals.
 
 # Comparison of Inferences
 
 ## Frequentist vs. Bayesian
 
-The differences between Frequentist and Bayesian inference mainly arise from how population parameters are defined [@pek; @acree2021]. Frequentist inference assumes that a parameter for a well-defined population at a given time is fixed and unknown, where a function of the data is the random variable. In some cases, this is a reasonable assumption, such as estimating the average weight of smallmouth bass in Lake Pepin, Minnesota \[[www.dnr.state.mn.us/lakefind/](https://www.dnr.state.mn.us/lakefind/showreport.html?downum=25000100)\](<https://www.dnr.state.mn.us/lakefind/showreport.html?downum=25000100>). Here, there is a true average weight for all smallmouth bass in the lake, but the value can only be estimated. In contrast, Bayesian inference interprets the population parameter as a random variable to quantify uncertainty. For the case of smallmouth bass in Lake Pepin, prior information about average weights obtained from historical records can be combined with current data to formulate the posterior distribution to update beliefs on average weights.
+The differences between Frequentist and Bayesian inference mainly arise from how population parameters are defined [@pek; @acree2021]. Frequentist inference assumes that a parameter for a well-defined population at a given time is fixed and unknown, where a function of the data is the random variable. In some cases, this is a reasonable assumption, such as estimating the average weight of smallmouth bass in Lake Pepin, Minnesota \[[www.dnr.state.mn.us/lakefind/](https://www.dnr.state.mn.us/lakefind/showreport.html?downum=25000100)\](<https://www.dnr.state.mn.us/lakefind/showreport.html?downum=25000100>). Here, there is a true average weight for all smallmouth bass in the lake, but the value can only be estimated. In contrast, Bayesian inference interprets the population parameter as a random variable to quantify uncertainty. For the case of smallmouth bass in Lake Pepin, prior information about average weights obtained from historical records can be combined with current data to formulate the posterior distribution to update beliefs on average weights for smallmouth bass in the lake.
 
 Treating the population parameter as fixed or random affects the types of statements that Frequentist and Bayesian inferences are allowed to make about the population. Under Frequentist methodology, functions of the data are considered random, and thus statements about the population parameter pertain to the sampling distribution of the data. In essence, this means that Frequentist statements answer the question "how often would this outcome occur under repeated sampling?" For Bayesian methodology, the posterior distribution allows statements to be made directly about the population parameters.
 
-A useful tool for both Frequentist and Bayesian inferences is a range of plausible values for the population parameter [@pek]. For Freqentists, this range of values is referred to as a confidence interval [@neyman1937]. The interpretations of confidence intervals are about how often repeated sampling of the population would result in the interval covering the true population parameter. These statements become "with X% confidence, the true population parameter is between *lower limit* and *upper limit*." The Bayesian use of the posterior distribution introduces the credible interval. With the credible interval, statements can be made directly about the population parameter, such as "there is X% probability that the population parameter is between *lower limit* and *upper limit.*" @fig-freq-bayes-ci shows an example of how the intervals differ between Frequentists and Bayesians.
+A useful tool for both Frequentist and Bayesian inferences is a range of plausible values for the population parameter [@pek]. For Freqentists, this range of values is the confidence interval [@neyman1937]. The interpretations of confidence intervals are about how often repeated sampling of the population would result in the interval covering the true population parameter. These statements become "with X% confidence, the true population parameter is between *lower limit* and *upper limit*." The Bayesian use of the posterior distribution introduces the credible interval. With the credible interval, statements can be made directly about the population parameter, such as "there is X% probability that the population parameter is between *lower limit* and *upper limit.*" @fig-freq-bayes-ci shows an example of how the intervals differ between Frequentists and Bayesians.
 
 ```{r}
 #| label: fig-freq-bayes-ci
@@ -366,7 +364,7 @@ The formulation of formal visual inference is rooted in the methodology of Frequ
 
 ## Bayesian vs. Visual
 
-Bayesian and visual inferences are perhaps the most different from each other. Bayesians rely on prior information to construct a model for the population parameter, but visual inference is mostly concerned with detecting differences between null plots and the target plot. Of course, some testing procedures in visual inference rely on previous knowledge that not all null plots are created equally, and thus different signal strengths within the null plots can be incorporated in statistical significance calculations [@vanderplas2021]. This approach is not directly a Bayesian inference, but can lead into a Bayesian approach by using the relationship between the multinomial and Dirichlet distributions.
+Bayesian and visual inferences are perhaps the most different from each other. Bayesians rely on prior information to construct a model for the population parameter, but visual inference is mostly concerned with detecting differences between null plots and the target plot. Of course, some testing procedures in visual inference rely on previous knowledge that not all null plots are created equally, and thus different signal strengths within the null plots can be incorporated in statistical significance calculations [@vanderplas2021]. Although this approach is not directly a Bayesian inference, but can lead into a Bayesian approach by using the relationship between the multinomial and Dirichlet distributions.
 
 ## Visual Inference as a Diagnostic Tool
 
@@ -383,7 +381,7 @@ In the National Hockey League (NHL), games played at home are filled with energy
 ```{r}
 #| label: tbl-wild
 
-wild <- read_csv('wild23-25.csv', show_col_types = F) %>% 
+wild <- read_csv('wild-gamelog.csv', show_col_types = F) %>% 
   mutate(pt_diff = abs(gf-ga))
 wild %>% 
   group_by(season, result, location) %>% 
