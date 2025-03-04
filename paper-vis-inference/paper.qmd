@@ -3,14 +3,14 @@ title: "Statistical Inference"
 subtitle: "A comparative review of Frequentist, Bayesian, and Visual methods"
 author: Tyler Wiederich
 date: "`r format(Sys.time(), '%B %d, %Y')`"
-format: 
-  wordcount-pdf: default
+format: wordcount-pdf
 bibliography: references.bib
 biblio-style: https://www.zotero.org/styles/apa
 execute: 
   echo: false
   message: false
   warning: false
+  include: false
 ---
 
 ```{=html}
@@ -29,15 +29,15 @@ theme_set(theme_bw())
 
 # Introduction
 
-The quantification of uncertainty is one of the key components behind statistical methodology [@acree2021; @lehmann2008book]. This is useful in cases where population parameters are unknown or unable to be reasonably measured. For example, some possible research questions that would require statistical methods include “What percentage of Minnesotan residents agree with the proposed legislation?,” or “Does the placement of higher margin products on the middle shelf of a store aisle lead to more profits than placement on top and bottom shelves?” These types of questions can be approximated using statistical inference, although the approach differs by the specific method of inference.
+The quantification of uncertainty is one of the fundamental concepts behind statistical methodology [@acree2021; @lehmann2008book]. This is useful in cases where population parameters are unknown or unable to be reasonably measured. For example, some possible research questions that would require statistical methods include “What percentage of Minnesotan residents agree with the proposed legislation?,” or “Does the placement of higher margin products on the middle shelf of a store aisle lead to more profits than placement on top and bottom shelves?” These types of questions can be investigated using statistical inference, although the approach differs by the specific method of inference.
 
-Implicitly, many statistical methods revolve around the concept of a hypothesis test [@neyman1933; @acree2021]. These tests are designed to determine whether or not there is evidence to support a claim. Data is evaluated against a null hypothesis, which is typically a baseline assumption or a specific condition. If the condition is deemed unlikely to occur by chance, then there is evidence to support its complement, called the alternative hypothesis. The strength of evidence can be quantified, leading to decisions about what interpretation or decision to make regarding the results of the method.
+Implicitly, many statistical methods revolve around the concept of a hypothesis test [@neyman1933; @acree2021]. These tests are designed to determine whether or not there is evidence to support a claim. Data is evaluated against a null hypothesis, which is typically a baseline assumption or a specific condition. If the condition is deemed unlikely to occur by chance, then there is evidence to support its complement, called the alternative hypothesis. The strength of evidence can be quantified through summaries such as p-values and Bayes factors [@held2018], leading to decisions about what interpretation or decision to make regarding the results of the method.
 
 Early statistical methodology is generally regarded as Frequentist inference [@neyman1933; @lehmann2008book]. The idea behind Frequentist methods is that data is random variable, generated from some probability function using at least one unknown population parameter. Functions of the data yield test statistics that are used to evaluate a hypothesis test. In Frequentist testing, the null hypothesis is usually defined such that there is no effect, and the alternative hypothesis is that there is an effect. Since the data is considered random, statements are made in terms of expected results under repeated sampling.
 
 A newer framework developed in the later 20th century using the idea that previously known information can help guide inference, which became known as Bayesian inference [@gelman2013; @lehmann2008book]. The availability of previous information, or lack thereof, forms the basis of belief for what occurs in nature. Bayesian inference combines new data with prior knowledge to update the belief of population parameters. In this case, the population parameter(s) is considered random and distributed according to belief and observed data.
 
-The use of visualizations is a valuable method for understanding the structure and patterns in data [@tukeyEDA], but they can also guide formal analyses [@loy2015; @loy2016; @loy2017]. Visual inference is where hypotheses can be tested by human perception instead of mathematical formulation. For example, Q-Q plots are a common diagnostic tool for checking normality assumptions [@loy2016]. While methods like the Shapiro-Wilk test [@shapiro1965] exist for testing normality, visual inference can be applied when assumptions are violated or tests do not exist, as long as a reference model is obtainable for null data generation.
+The use of visualizations is a valuable method for understanding the structure and patterns in data [@tukeyEDA], but they can also guide formal analyses [@loy2015; @loy2016; @loy2017]. Visual inference is where hypotheses can be tested by human perception instead of mathematical formulation. For example, Q-Q plots are a common diagnostic tool for checking normality assumptions [@loy2016]. While methods like the Shapiro-Wilk test [@shapiro1965] exist for testing normality, visual inference can be applied when assumptions are violated or tests do not exist.
 
 This paper is organized as follows. The foundations and uses of Frequentist, Bayesian, and visual inferences are explained, including how each method should be interpreted. Then each method is compared to the other methods. Finally, an example using a Binomial generalized linear model is fitted with Frequentist and Bayesian methods, and evaluated using visual inference.
 
@@ -67,7 +67,7 @@ tibble(
   
 ```
 
-In the early development of Frequentist statistics, philosophical debates between R. A. Fisher and J. Neyman led to the distinction between "inductive inference" and "inductive behavior" [@lehmann2008]. Inductive inferences, as preferred by Fisher, involves logical rational to develop models. On the other hand, Neyman's inductive behavior addresses the additional component of randomization through hypothesis testing. Both arguments start with the assumption that the random variable in question is independent and identically distributed. However, the two statisticians differed on the interpretations and approaches, with Fisher favoring intuition and Neyman favoring proofs. The methodology was similar between them, emphasizing specific approaches and scope of inference.
+During the early development of Frequentist statistics, philosophical debates between R. A. Fisher and J. Neyman led to the distinction between "inductive inference" and "inductive behavior" [@lehmann2008]. Inductive inferences, as preferred by Fisher, involves logical rational to develop models. On the other hand, Neyman's inductive behavior addresses the additional component of randomization through hypothesis testing. Both arguments start with the assumption that the random variable in question is independent and identically distributed. However, the two statisticians differed on the interpretations and approaches, with Fisher favoring intuition and Neyman favoring proofs. The methodology was similar between them, emphasizing specific approaches and scope of inference.
 
 Fisher believed that probability was deductive in nature and that probabilistic events could be formulated mathematically to produce a maximum likelihood function [@fisher1935]. For example, the Binomial distribution is given by $P(X=x)={n\choose x}p^x(1-p)^{n-x}$, where $X$ is the random variable for the number of successes out of $n$ trials given a probability $p$ for $x$ successes. The probability mass function comes from multiplying the number of combinations that a series of successes can take to the probabilities of individual successes and individual failures, a formulation of combinatorics. When taking the likelihood, the most plausible estimate of the probability can be found by establishing which value maximizes the likelihood with respect to all possible probabilities [@fig-freq-binom].
 
@@ -127,20 +127,28 @@ Confidence intervals are another method of evaluating hypothesis tests [@neyman1
 
 ```{r}
 #| label: fig-freq-eval-methods
-#| fig-cap: "Frequentist evaluation methods using test statistics and confidence intervals under a null hypothesis that uses a standard normal distribution. Panel (a) shows the area under a standard normal for the Z-score of the observed sample mean. Panel (b) provides 95% confidence intervals for Z-scores of the sample mean across multiple samples."
+#| fig-cap: "Frequentist evaluation methods using test statistics and confidence intervals under a null hypothesis that uses a standard normal distribution with a sample size of 100. Panel (a) shows the area under the sampling distribution for where $Z=\\frac{\\bar{X}}{1/\\sqrt{100}}$ would reject the null hypothesis. Panel (b) provides 95% confidence intervals for sample means across multiple samples."
 #| fig-subcap: 
 #| - "Probability of observing test statistic under null hypothesis."
 #| - "95% confidence interval for multiple repeated samples."
 #| out-width: 90%
+#| fig-height: 4
+#| layout-ncol: 2
 
 set.seed(20244)
 ggplot() + 
-  stat_function(fun = dnorm) + 
-  stat_function(fun = dnorm, xlim = c(1.5,4), 
+  stat_function(fun = \(x)(dnorm(x, sd = 1/sqrt(100))),
+                xlim = c(-4/sqrt(100), 4/sqrt(100))) + 
+  stat_function(fun = \(x)(dnorm(x, sd = 1/sqrt(100))),
+                xlim = c(qnorm(0.975, sd = 1/sqrt(100)), 4/sqrt(100)),
                 geom = 'area',
-                fill = 'red', color = 'black') + 
+                fill = 'red', color = 'black') +
+  stat_function(fun = \(x)(dnorm(x, sd = 1/sqrt(100))),
+                xlim = c(-qnorm(0.975, sd = 1/sqrt(100)), -4/sqrt(100)),
+                geom = 'area',
+                fill = 'red', color = 'black') +
   labs(x = 'Z', y = expression(phi(Z))) + 
-  scale_x_continuous(limits = c(-3, 3)) + 
+  scale_x_continuous(limits = c(-4/sqrt(100), 4/sqrt(100))) +
   theme(aspect.ratio = 1)
 
 freq.ci <- data.frame()
@@ -162,7 +170,7 @@ freq.ci %>%
   scale_color_brewer(palette = 'Set1') +
   labs(x = 'Z', y = 'Sample ID', color = 'CI contain zero?') + 
   geom_vline(xintercept = 0, color = 'red', linetype = 'dashed') + 
-  theme(aspect.ratio = 1)
+  theme(aspect.ratio = 1, legend.position = 'none')
 ```
 
 ## Bayesian Inference {#sec-bayesian}
@@ -197,11 +205,9 @@ Similar to Frequentist methods, intervals of the parameters can be created for t
 
 ```{r}
 #| label: fig-bayes-binom
-#| fig-cap: "Caption"
-#| fig-subcap: 
-#| - "a: likelihoods"
-#| - "b: data simulated from models"
-#| layout-ncol: 2
+#| fig-cap: "Posterior distributions for probability of success of a Binomial distriubtion using Beta and uniform prior distributions. Data was generated so that 13 out of 20 trials were successful with a true probability of 0.7, which is denoted by the red line. "
+#| fig-height: 4
+#| fig-align: center
 #| out-width: 90%
 
 set.seed(1999)
@@ -226,7 +232,10 @@ tibble(
   geom_line(aes(y = fx.b, linetype = 'Beta')) +
   geom_vline(xintercept = 0.7, color = 'red') +
   scale_linetype_manual(values = prior) + 
-  labs(x = 'p', y = 'Posterior density', linetype = 'Prior')
+  labs(x = 'p', y = 'Posterior density', linetype = 'Prior') + 
+  theme(aspect.ratio = 1/2)
+
+
 
 ```
 
@@ -381,7 +390,7 @@ wild %>%
   count() %>% 
   pivot_wider(names_from = location, values_from = n) %>% 
   mutate(season = paste0(season-1, '-', season)) %>% 
-  knitr::kable(caption = 'Data from the 2023-24 and 2024-25 seasons for the Minnesota Wild. 0 represents losses and 1 represents wins.')
+  knitr::kable(caption = 'Data from the 2023-24 and 2024-25 seasons for the Minnesota Wild. 0 represents losses and 1 represents wins.', align = 'c')
 ```
 
 The first step of any analysis should be data exploration (@fig-true-props). The Minnesota Wild won 48.1 percent of their home games and 63.6 percent of their away games as of February 28th, 2025. Immediately noticeable is that the Wild seem to perform better when not playing on home-ice. We also have information about point differentials that may be helpful, which is the difference in scores at the end of the game.
@@ -390,14 +399,15 @@ The first step of any analysis should be data exploration (@fig-true-props). The
 #| label: fig-true-props
 #| fig-height: 4
 #| fig-width: 6
-#| fig-cap: ""
+#| fig-cap: "Observed proportion of wins for the Minnesota Wild."
 
 wild %>% 
   group_by(season, location, result, pt_diff) %>% 
   count() %>% 
   pivot_wider(names_from = result, names_prefix = 'result',
               values_from = n, values_fill = 0) %>% 
-  mutate(propwin = result1 / (result0+result1)) %>% 
+  mutate(propwin = result1 / (result0+result1),
+         season = map_chr(season, \(x)(paste0(season-1, '-', season)))) %>% 
   filter(!(result0 == 0 & result1 == 0)) %>% 
   ggplot(mapping = aes(x = pt_diff, y = propwin, color = location)) + 
   geom_line() + 
@@ -440,7 +450,7 @@ ggplot(data.frame(em), aes(x = factor(pt_diff), y = prob, color = location)) +
   labs(x = 'Point differential', y = 'Estimated probability of winning')
 ```
 
-Fitting a Frequentist generalized linear model (GLM) as shown in @eq-freq-glm reveals that the point differential is the only significant term (@tbl-anova), which means that the Wild do not seem to have a winning advantage by playing on home-ice. The only conclusion from the this analysis is that there is evidence that the Minnesota Wild are less likely to win games for larger point differentials than for smaller point differentials.
+Fitting a Frequentist generalized linear model (GLM) as shown in @eq-freq-glm reveals that the point differential is the only significant term (@tbl-anova), which means that the Wild do not seem to have a winning advantage by playing on home-ice. The only conclusion from the this analysis is that there is evidence that the Minnesota Wild are less likely to win games for larger point differentials than for smaller point differentials. In other words,
 
 $$
 \eta_{ij}=\log(\frac{\pi_{ij}}{(1-\pi_{ij})})=\beta_0+\beta_{1i}+\beta_2X_{j}+\beta_3X_{j}^2
@@ -541,13 +551,31 @@ Comparing the two Bayesian models and using the model with informative priors as
 
 ```{r}
 #| label: tbl-coef-compare
+
+freq.coef <- summary(mod.freq)$coefficient[,1:2] %>% 
+  as.data.frame() %>% 
+  rownames_to_column() %>% 
+  mutate(Frequentist = map2_chr(Estimate, `Std. Error`, \(x,y)(glue::glue('{round(x,2)} ({round(y, 2)})'))))
+
+bayes.u.coef <- fixef(bayes.unif)[,1:2] %>% 
+  as.data.frame() %>% 
+  rownames_to_column() %>% 
+  mutate(Bayes.unif = map2_chr(Estimate, Est.Error, \(x,y)(glue::glue('{round(x,2)} ({round(y, 2)})'))))
+
+bayes.n.coef <- fixef(bayes.priors)[,1:2] %>% 
+  as.data.frame() %>% 
+  rownames_to_column() %>% 
+  mutate(Bayes.normal = map2_chr(Estimate, Est.Error, \(x,y)(glue::glue('{round(x,2)} ({round(y, 2)})'))))
+
+
 data.frame(
-  Frequentist = coef(mod.freq),
-  `Flat priors` = fixef(bayes.unif)[,1],
-  `Informative priors` = fixef(bayes.priors)[,1]
+  Term = freq.coef$rowname,
+  Freq = freq.coef$Frequentist,
+  `Uniform priors` = bayes.u.coef$Bayes.unif,
+  `Informative priors` = bayes.n.coef$Bayes.normal
 ) %>% 
-  rownames_to_column(var = 'Term') %>% 
-  knitr::kable(digits = 3, caption = 'Coefficients of Frequentist and Bayesian methods for GLMs fit to the Minnesota Wild data.')
+  # rownames_to_column(var = 'Term') %>% 
+  knitr::kable(digits = 3, caption = 'Coefficients and standard errors of Frequentist and Bayesian methods for GLMs fit to the Minnesota Wild data.', col.names = c('Term', 'Frequentist GLM', 'Bayes GLM (Uniform Priors)', 'Bayes GLM (Normal Priors)'), align = 'c')
 
 
 ```
